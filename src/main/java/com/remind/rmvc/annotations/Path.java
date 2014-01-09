@@ -1,4 +1,4 @@
-package com.remind.mymvc.annotations;
+package com.remind.rmvc.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -1,4 +1,4 @@
-package com.remind.mymvc.annotations;
+package com.remind.rmvc.annotations;
 
 public class TestMain {
 
