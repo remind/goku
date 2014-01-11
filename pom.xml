@@ -5,9 +5,16 @@
   <version>0.0.1-SNAPSHOT</version>
   <dependencies>
   	<dependency>
-  		<groupId>com.remind</groupId>
-  		<artifactId>Rutils</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<groupId>javax.servlet</groupId>
+  		<artifactId>javax.servlet-api</artifactId>
+  		<version>3.0.1</version>
+  		<scope>provided</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.google.guava</groupId>
+  		<artifactId>guava</artifactId>
+  		<version>13.0.1</version>
+  		<type>jar</type>
   	</dependency>
   </dependencies>
   <build>
