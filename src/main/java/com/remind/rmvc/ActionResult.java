@@ -1,7 +1,7 @@
 package com.remind.rmvc;
 
 import com.remind.rmvc.context.WebLifeContext;
-import com.remind.rmvc.internal.ModelMap;
+import com.remind.rmvc.internal.Model;
 
 /**
  * 用于包装从controller中直接返回的结果
@@ -11,7 +11,7 @@ import com.remind.rmvc.internal.ModelMap;
 public class ActionResult {
 
 	private WebLifeContext webLifeContext;
-	private ModelMap modelMap = new ModelMap();
+	private Model model = GlobalFactory.getModel();
 	
 	public WebLifeContext getWebLifeContext() {
 		return webLifeContext;
@@ -19,10 +19,10 @@ public class ActionResult {
 	public void setWebLifeContext(WebLifeContext webLifeContext) {
 		this.webLifeContext = webLifeContext;
 	}
-	public ModelMap getModelMap() {
-		return modelMap;
+	public Model getModelMap() {
+		return model;
 	}
-	public void setModelMap(ModelMap modelMap) {
-		this.modelMap = modelMap;
+	public void setModelMap(Model modelMap) {
+		this.model = modelMap;
 	}
 }
