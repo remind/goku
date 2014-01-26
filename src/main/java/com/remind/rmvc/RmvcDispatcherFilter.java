@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.remind.rmvc.context.WebLifeContext;
+import com.remind.rmvc.context.ClientContext;
 
 /**
  * 利用Filter来拦截
@@ -35,8 +35,8 @@ public class RmvcDispatcherFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		WebLifeContext webLifeContext = new WebLifeContext((HttpServletRequest)request, (HttpServletResponse)response);
-		GlobalFactory.getRoute().route(webLifeContext);
+		ClientContext clientContext = new ClientContext((HttpServletRequest)request, (HttpServletResponse)response);
+		GlobalFactory.getRoute().route(clientContext);
 	}
 
 	@Override

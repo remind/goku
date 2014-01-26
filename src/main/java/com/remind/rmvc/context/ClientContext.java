@@ -4,16 +4,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 作为每次请求整个生命期间的上下文信息
+ * 管理每次客户端请求的上下文信息
  * @author remind
  *
  */
-public class WebLifeContext {
+public class ClientContext {
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	
-	public WebLifeContext(HttpServletRequest request, HttpServletResponse response) {
+	public ClientContext(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
 	}

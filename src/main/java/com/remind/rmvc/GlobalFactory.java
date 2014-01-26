@@ -1,9 +1,9 @@
 package com.remind.rmvc;
 
-import com.remind.rmvc.internal.Model;
-import com.remind.rmvc.internal.Router;
-import com.remind.rmvc.internal.impl.DefaultModel;
-import com.remind.rmvc.internal.impl.DefaultRouter;
+import com.remind.rmvc.model.DataModel;
+import com.remind.rmvc.model.impl.ClientModel;
+import com.remind.rmvc.route.Router;
+import com.remind.rmvc.route.impl.DefaultRouter;
 
 /**
  * 全局工厂类
@@ -19,8 +19,12 @@ public class GlobalFactory {
 	public static Router getRoute() {
 		return new DefaultRouter();
 	}
-	
-	public static Model getModel() {
-		return new DefaultModel();
+	/**
+	 * 客户端请求数据模型
+	 * @return
+	 */
+	public static DataModel getClientModel() {
+		return new ClientModel();
 	}
+	
 }

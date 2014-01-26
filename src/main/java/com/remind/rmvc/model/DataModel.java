@@ -1,13 +1,13 @@
-package com.remind.rmvc.internal;
+package com.remind.rmvc.model;
 
 import java.util.Map;
 
 /**
- * 数据封装模型
+ * 数据模型
  * @author remind
  *
  */
-public interface Model {
+public interface DataModel {
 
 	/**
 	 * 添加一对值
@@ -15,14 +15,14 @@ public interface Model {
 	 * @param value
 	 * @return
 	 */
-	public Model add(String key, Object value);
+	public DataModel add(String key, Object value);
 	
 	/**
 	 * 批量增加
 	 * @param map
 	 * @return
 	 */
-	public Model addAll(Map<String, ?> map);
+	public DataModel addAll(Map<String, ?> map);
 	
 	/**
 	 * 根据key返回value
@@ -30,7 +30,6 @@ public interface Model {
 	 * @return
 	 */
 	public Object get(String key);
-	
 	
 	/**
 	 * 返回所有，直接返回的一个Map
