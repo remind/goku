@@ -12,7 +12,7 @@ import com.remind.rmvc.model.DataModel;
 public class ActionResult {
 
 	private ActionContext actionContext;
-	private DataModel model = GlobalFactory.getActionModel();
+	private DataModel model = GlobalFactory.getActionDataModel();
 	
 	public ActionContext getActionContext() {
 		return actionContext;

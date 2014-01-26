@@ -11,7 +11,7 @@ import com.remind.rmvc.model.DataModel;
  * @author remind
  *
  */
-public class ActionModel implements DataModel {
+public class ActionDataModel implements DataModel {
 
 	private Map<String, Object> data = Maps.newConcurrentMap();
 	

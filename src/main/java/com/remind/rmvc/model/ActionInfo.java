@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
 /**
  * 保存action的信息
  * 每一个请求所对应的controller中的方法为一个action
@@ -40,7 +42,7 @@ public class ActionInfo {
 	/**
 	 * 方法里面的参数名及其类型
 	 */
-	private Map<String, Class<?>> param = new HashMap<>();
+	private Map<String, Class<?>> param = Maps.newHashMap();
 
 	public String getPathPattern() {
 		return pathPattern;
