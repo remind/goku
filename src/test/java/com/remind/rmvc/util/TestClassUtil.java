@@ -25,7 +25,7 @@ public class TestClassUtil {
 				return false;
 			}
 		});
-		Assert.assertTrue(classes.size() > 0);
+		Assert.assertTrue(classes.contains(PageController.class) && classes.size() > 0);
 	}
 	
 	@Test

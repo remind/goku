@@ -53,17 +53,15 @@ public class ClassUtil {
 						}
 					});
 					for(File file : fileSet) {
-						if (file.isFile()) {
-							String className = packageName + file.getPath().substring(dir.getPath().length()).replace(File.separatorChar, '.');
-							className = className.substring(0, className.length() - 6);//去掉后面的.class
-							try {
-								Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(className);
-								if (classFilter.accept(cls)) {
-									classes.add(cls);
-								}
-							} catch (ClassNotFoundException e) {
-								e.printStackTrace();
+						String className = packageName + file.getPath().substring(dir.getPath().length()).replace(File.separatorChar, '.');
+						className = className.substring(0, className.length() - 6);//去掉后面的.class
+						try {
+							Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(className);
+							if (classFilter.accept(cls)) {
+								classes.add(cls);
 							}
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
 						}
 					}
 				}
