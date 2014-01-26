@@ -33,7 +33,6 @@ public class TestScanAction {
 			ai.setGet(true);
 			ai.setPost(false);
 			
-			
 			Set<ActionInfo> actionInfo = scanAction.getActionByClass(cls);
 			Assert.assertTrue(actionInfo.iterator().next().equals(ai));//这里不知道为什么用actionInfo.contains(ai)会返回false
 		} catch (NoSuchMethodException e) {
