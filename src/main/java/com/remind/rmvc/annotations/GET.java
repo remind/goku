@@ -10,11 +10,11 @@ import java.lang.annotation.Target;
 /**
  * 
  * GET注解
- * 标明当前方法只接受get
+ * 方法的优先类上面的
  * @author remind
  */
 @Documented
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GET {
 
