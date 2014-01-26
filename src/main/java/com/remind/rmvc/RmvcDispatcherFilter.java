@@ -29,7 +29,7 @@ public class RmvcDispatcherFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		Bootstrap.init();
+		Application.start();
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class RmvcDispatcherFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		Bootstrap.destroy();
+		Application.destroy();
 	}
 
 }

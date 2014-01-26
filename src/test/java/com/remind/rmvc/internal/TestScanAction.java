@@ -44,7 +44,7 @@ public class TestScanAction {
 	
 	@Test
 	public void testStart() {
-		Set<ActionInfo> actions = scanAction.start(GlobalConfig.getControllerPattern());
+		Set<ActionInfo> actions = scanAction.getActionByPackage(GlobalConfig.getControllerPattern());
 		Assert.assertTrue(actions.size() > 0);
 	}
 }

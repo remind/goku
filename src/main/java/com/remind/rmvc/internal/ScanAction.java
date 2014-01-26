@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
 import com.remind.rmvc.annotations.GET;
 import com.remind.rmvc.annotations.POST;
 import com.remind.rmvc.annotations.Path;
@@ -23,8 +24,8 @@ public class ScanAction {
 	 * @param scanPackName	要扫描的包路径
 	 * @return
 	 */
-	public Set<ActionInfo> start(String scanPackName) {
-		Set<ActionInfo> actions = new HashSet<ActionInfo>();
+	public Set<ActionInfo> getActionByPackage(String scanPackName) {
+		Set<ActionInfo> actions = Sets.newHashSet();
 		Set<Class<?>> classes = ClassUtil.getClasses(scanPackName, new ClassFilter() {
 			@Override
 			public boolean accept(Class<?> cls) {
