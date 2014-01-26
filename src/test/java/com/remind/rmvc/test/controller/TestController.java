@@ -6,7 +6,7 @@ import com.remind.rmvc.annotations.Path;
 
 public class TestController {
 
-	@Path()
+	@Path("/test")
 	public void index() {
 		
 	}
