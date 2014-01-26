@@ -1,6 +1,6 @@
 package com.remind.rmvc.route;
 
-import com.remind.rmvc.context.ClientContext;
+import com.remind.rmvc.context.ActionContext;
 import com.remind.rmvc.internal.ActionResult;
 
 /**
@@ -10,5 +10,5 @@ import com.remind.rmvc.internal.ActionResult;
  */
 public interface Router {
 
-	public ActionResult route(ClientContext clientContext);
+	public ActionResult route(ActionContext actionContext);
 }

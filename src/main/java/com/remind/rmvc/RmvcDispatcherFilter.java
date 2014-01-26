@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.remind.rmvc.context.ClientContext;
+import com.remind.rmvc.context.ActionContext;
 
 /**
  * 利用Filter来拦截
@@ -35,8 +35,8 @@ public class RmvcDispatcherFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		ClientContext clientContext = new ClientContext((HttpServletRequest)request, (HttpServletResponse)response);
-		GlobalFactory.getRoute().route(clientContext);
+		ActionContext actionContext = new ActionContext((HttpServletRequest)request, (HttpServletResponse)response);
+		GlobalFactory.getRoute().route(actionContext);
 	}
 
 	@Override

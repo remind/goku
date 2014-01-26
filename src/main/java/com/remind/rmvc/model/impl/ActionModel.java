@@ -6,12 +6,12 @@ import com.google.common.collect.Maps;
 import com.remind.rmvc.model.DataModel;
 
 /**
- * 每次客户端请求的数据封装
+ * 每次请求的数据封装
  * 以及传递给view的数据
  * @author remind
  *
  */
-public class ClientModel implements DataModel {
+public class ActionModel implements DataModel {
 
 	private Map<String, Object> data = Maps.newConcurrentMap();
 	
