@@ -1,7 +1,6 @@
 package com.remind.rmvc.model;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -15,9 +14,14 @@ import com.google.common.collect.Maps;
 public class ActionInfo {
 
 	/**
-	 * 匹配url的字符串，对应为注解path中的值
+	 * 类上面的匹配串
 	 */
-	private String pathPattern;
+	private String classPathPattern;
+	
+	/**
+	 * 方法上面匹配url的字符串，对应为注解path中的值
+	 */
+	private String methodPathPattern;
 	
 	/**
 	 * 是否为post
@@ -44,12 +48,20 @@ public class ActionInfo {
 	 */
 	private Map<String, Class<?>> param = Maps.newHashMap();
 
-	public String getPathPattern() {
-		return pathPattern;
+	public String getClassPathPattern() {
+		return classPathPattern;
 	}
 
-	public void setPathPattern(String pathPattern) {
-		this.pathPattern = pathPattern;
+	public void setClassPathPattern(String classPathPattern) {
+		this.classPathPattern = classPathPattern;
+	}
+
+	public String getMethodPathPattern() {
+		return methodPathPattern;
+	}
+
+	public void setMethodPathPattern(String methodPathPattern) {
+		this.methodPathPattern = methodPathPattern;
 	}
 
 	public boolean isPost() {
@@ -98,7 +110,7 @@ public class ActionInfo {
 	 */
 	@Override
 	public int hashCode() {
-		int h = pathPattern.hashCode();
+		int h = classPathPattern.hashCode() + methodPathPattern.hashCode();
 		if (isPost) {
 			h += 1;
 		}
@@ -111,7 +123,8 @@ public class ActionInfo {
 	@Override
 	public String toString() {
 		String s = "\n";
-		s += "pathPattern:" + this.pathPattern + '\n';
+		s += "ClassPathPattern:" + this.classPathPattern + '\n';
+		s += "MethodPathPattern:" + this.methodPathPattern + '\n';
 		s += "Controller:" + this.cls + '\n';
 		s += "Method:" + this.method + '\n';
 		s += "Method Param:" + this.param.toString() + '\n';

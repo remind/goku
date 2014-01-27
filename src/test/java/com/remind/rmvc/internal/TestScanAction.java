@@ -24,7 +24,8 @@ public class TestScanAction {
 			method = cls.getDeclaredMethod("tag", String.class);
 			
 			ActionInfo ai = new ActionInfo();
-			ai.setPathPattern("/blog/page/tag");
+			ai.setClassPathPattern("/blog/page");
+			ai.setMethodPathPattern("/tag");
 			ai.setCls(cls);
 			ai.setMethod(method);
 			Map<String, Class<?>> param = new HashMap<>();

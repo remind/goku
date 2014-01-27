@@ -51,31 +51,21 @@ public class ScanAction {
 		for(Method m : cls.getMethods()) {
 			if (m.getAnnotation(Path.class) != null) {
 				ActionInfo actionInfo = new ActionInfo();
+				if (cls.getAnnotation(Path.class) != null) {
+					actionInfo.setClassPathPattern(cls.getAnnotation(Path.class).value());
+				} else {
+					actionInfo.setClassPathPattern("");
+				}
 				actionInfo.setCls(cls);
 				actionInfo.setMethod(m);
 				actionInfo.setParam(ClassUtil.getMethodParam(cls, m));
-				actionInfo.setPathPattern(getPath(cls, m));
+				actionInfo.setMethodPathPattern(m.getAnnotation(Path.class).value());
 				actionInfo.setPost(isPost(cls, m));
 				actionInfo.setGet(isGet(cls, m));
 				action.add(actionInfo);
 			}
 		}
 		return action;
-	}
-	
-	/**
-	 * 获取路径
-	 * @param cls
-	 * @param method
-	 * @return
-	 */
-	private String getPath(Class<?> cls, Method method) {
-		String path = "";
-		if (cls.getAnnotation(Path.class) != null) {
-			path = cls.getAnnotation(Path.class).value();
-		}
-		path += method.getAnnotation(Path.class).value();
-		return path;
 	}
 	
 	/**
