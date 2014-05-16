@@ -23,7 +23,7 @@ public class DefaultRouter implements Router{
 	private HttpContext httpContext = HttpContext.getCurrent();
 	
 	public ActionResult route() {
-		ActionResult actionResult = new ActionResult();
+		ActionResult actionResult = null;
 		String path = httpContext.getMatchPath();
 		for(ActionInfo ai : Application.getAllAction()) {
 			String clsPattern = ai.getClassPathPattern();
@@ -31,6 +31,7 @@ public class DefaultRouter implements Router{
 			String pattern = PathMatcher.combine(clsPattern, methodPattern);
 			matcher = new PathMatcher(pattern, path);
 			if (matcher.doMatch() && compareMethod(ai)) {
+				actionResult = new ActionResult();
 				Map<String, String> map = new HashMap<>();
 				map = matcher.getVariable();
 				Method method = ai.getMethod();
@@ -45,15 +46,14 @@ public class DefaultRouter implements Router{
 					} else {
 						actionResult = (ActionResult)method.invoke(ai.getControllerClass().getClass().newInstance());
 					}
+					return actionResult;
 				} catch (IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | InstantiationException e) {
 					e.printStackTrace();
 				}
-			} else {
-				actionResult = null;
 			}
 		}
-		return actionResult;
+		return null;
 	}
 	
 	private boolean compareMethod(ActionInfo ai) {

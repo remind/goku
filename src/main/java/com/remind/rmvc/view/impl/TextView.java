@@ -22,6 +22,10 @@ public class TextView implements View {
 		this.content = content;
 	}
 	
+	public void setHeader(String name, String value) {
+		httpContext.getResponse().setHeader(name, value);
+	}
+	
 	@Override
 	public void render(ActionResult actionResult) {
 		try {
