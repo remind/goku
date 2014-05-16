@@ -16,6 +16,6 @@ public class PageController {
 	@Path("/tag")
 	@GET
 	public void tag(String name) {
-		
+		//System.out.println("hello " + name);
 	}
 }

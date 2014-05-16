@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.collect.Sets;
 import com.remind.rmvc.annotations.GET;
 import com.remind.rmvc.annotations.POST;
@@ -19,6 +21,7 @@ import com.remind.rmvc.utils.ClassUtil.ClassFilter;
  */
 public class ScanAction {
 	
+	private static Logger logger = Logger.getLogger(ScanAction.class);
 	/**
 	 * 扫描所有controller，并返回
 	 * @param scanPackName	要扫描的包路径
@@ -56,6 +59,11 @@ public class ScanAction {
 				} else {
 					actionInfo.setClassPathPattern("");
 				}
+				try {
+					actionInfo.setControllerClass(cls.newInstance());
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 				actionInfo.setCls(cls);
 				actionInfo.setMethod(m);
 				actionInfo.setParam(ClassUtil.getMethodParam(cls, m));
@@ -63,6 +71,7 @@ public class ScanAction {
 				actionInfo.setPost(isPost(cls, m));
 				actionInfo.setGet(isGet(cls, m));
 				action.add(actionInfo);
+				logger.info("controller - " + actionInfo.toString());
 			}
 		}
 		return action;

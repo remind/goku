@@ -12,6 +12,6 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public static String getControllerPattern() {
-		return "com.remind.rmvc.test.controller";
+		return "com.remind";
 	}
 }

@@ -2,6 +2,8 @@ package com.remind.rmvc;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.collect.Sets;
 import com.remind.rmvc.internal.ScanAction;
 import com.remind.rmvc.model.ActionInfo;
@@ -16,11 +18,13 @@ public class Application {
 	private static Set<ActionInfo> allAction = Sets.newConcurrentHashSet();
 	private static boolean isInit = false;
 	private static Application application = new Application();
+	private static Logger logger = Logger.getLogger(Application.class);
 	
 	public static void start() { 
 		if (isInit) {
 			return;
 		}
+		logger.info("application start");
 		application.load();
 		isInit = true;
 	}
@@ -41,6 +45,7 @@ public class Application {
 	 * 扫描出所有的action
 	 */
 	private void scanAction() {
+		logger.info("扫描action");
 		ScanAction scanAction = new ScanAction();
 		allAction.clear();
 		allAction = scanAction.getActionByPackage(GlobalConfig.getControllerPattern());

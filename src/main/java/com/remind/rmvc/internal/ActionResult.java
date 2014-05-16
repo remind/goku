@@ -1,7 +1,7 @@
 package com.remind.rmvc.internal;
 
 import com.remind.rmvc.GlobalFactory;
-import com.remind.rmvc.context.ActionContext;
+import com.remind.rmvc.context.HttpContext;
 import com.remind.rmvc.model.DataModel;
 
 /**
@@ -11,13 +11,13 @@ import com.remind.rmvc.model.DataModel;
  */
 public class ActionResult {
 
-	private ActionContext actionContext;
+	private HttpContext actionContext;
 	private DataModel model = GlobalFactory.getActionDataModel();
 	
-	public ActionContext getActionContext() {
+	public HttpContext getActionContext() {
 		return actionContext;
 	}
-	public void setClientContext(ActionContext actionContext) {
+	public void setClientContext(HttpContext actionContext) {
 		this.actionContext = actionContext;
 	}
 	public DataModel getModelMap() {

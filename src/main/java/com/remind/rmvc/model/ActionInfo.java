@@ -39,6 +39,11 @@ public class ActionInfo {
 	private Class<?> cls;
 	
 	/**
+	 * controller对应的实例，在反射时使用
+	 */
+	private Object controllerClass;
+	
+	/**
 	 * 所对应的方法
 	 */
 	private Method method;
@@ -104,6 +109,14 @@ public class ActionInfo {
 		this.param = param;
 	}
 	
+	public Object getControllerClass() {
+		return controllerClass;
+	}
+
+	public void setControllerClass(Object controllerClass) {
+		this.controllerClass = controllerClass;
+	}
+
 	/**
 	 * 计算出hashCode，防止重复，一个链接加上请求方式应该是唯一定位到一个action
 	 * 当前算法并不可靠

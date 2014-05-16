@@ -14,7 +14,9 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.remind.rmvc.context.ActionContext;
+import org.apache.log4j.Logger;
+
+import com.remind.rmvc.context.HttpContext;
 
 /**
  * 利用Filter来拦截
@@ -27,16 +29,21 @@ import com.remind.rmvc.context.ActionContext;
 )
 public class RmvcDispatcherFilter implements Filter {
 
+	private static Logger logger = Logger.getLogger(RmvcDispatcherFilter.class);
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
+		logger.info("filter init");
 		Application.start();
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		ActionContext actionContext = new ActionContext((HttpServletRequest)request, (HttpServletResponse)response);
-		GlobalFactory.getRoute().route(actionContext);
+		HttpContext httpContext = HttpContext.getCurrent();
+		httpContext.setRequest((HttpServletRequest)request);
+		httpContext.setResponse((HttpServletResponse)response);
+		GlobalFactory.getRoute().route(httpContext);
 	}
 
 	@Override
