@@ -51,7 +51,7 @@ public class HttpContext {
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;
 	}
-
+	
 	/**
 	 * 返回用于controller匹配的路径
 	 * 

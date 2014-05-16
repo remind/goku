@@ -9,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.remind.rmvc.GlobalConfig;
-import com.remind.rmvc.model.ActionInfo;
 import com.remind.rmvc.test.controller.blog.PageController;
 
 public class TestScanAction {

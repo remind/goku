@@ -1,8 +1,6 @@
 package com.remind.rmvc.internal;
 
-import com.remind.rmvc.GlobalFactory;
-import com.remind.rmvc.context.HttpContext;
-import com.remind.rmvc.model.DataModel;
+import com.remind.rmvc.view.View;
 
 /**
  * 用于包装从controller中直接返回的结果
@@ -11,19 +9,46 @@ import com.remind.rmvc.model.DataModel;
  */
 public class ActionResult {
 
-	private HttpContext actionContext;
-	private DataModel model = GlobalFactory.getActionDataModel();
+	/**
+	 * contorller要交给view的数据
+	 */
+	private ModelMap model = new ModelMap();
 	
-	public HttpContext getActionContext() {
-		return actionContext;
-	}
-	public void setClientContext(HttpContext actionContext) {
-		this.actionContext = actionContext;
-	}
-	public DataModel getModelMap() {
+	/**
+	 * 本次请求所带的参数 
+	 */
+	private ModelMap requestMap = new ModelMap();
+	
+	/**
+	 * 最终要渲染的view
+	 */
+	private View view;
+	
+	public ModelMap getModel() {
 		return model;
 	}
-	public void setModelMap(DataModel modelMap) {
-		this.model = modelMap;
+
+	public void setModel(ModelMap model) {
+		this.model = model;
+	}
+	
+	public ModelMap getRequestMap() {
+		return requestMap;
+	}
+
+	public void setRequestMap(ModelMap requestMap) {
+		this.requestMap = requestMap;
+	}
+
+	public View getView() {
+		return view;
+	}
+
+	public void setView(View view) {
+		this.view = view;
+	}
+
+	public void render() {
+		view.render(this);
 	}
 }

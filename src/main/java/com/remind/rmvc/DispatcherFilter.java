@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.google.common.base.Strings;
 import com.remind.rmvc.context.HttpContext;
+import com.remind.rmvc.internal.ActionResult;
 
 /**
  * 利用Filter来拦截
@@ -42,7 +43,13 @@ public class DispatcherFilter implements Filter {
 		HttpContext httpContext = HttpContext.getCurrent();
 		httpContext.setRequest((HttpServletRequest)request);
 		httpContext.setResponse((HttpServletResponse)response);
-		GlobalFactory.getRoute().route(httpContext);
+		httpContext.getRequest().setCharacterEncoding(encoding);
+		ActionResult actionResult = GlobalFactory.getRoute().route();
+		if (actionResult != null) {
+			actionResult.render();
+		} else {
+			chain.doFilter(request, response);
+		}
 	}
 
 	@Override

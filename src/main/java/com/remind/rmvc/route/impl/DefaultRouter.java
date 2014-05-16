@@ -7,9 +7,9 @@ import java.util.Map;
 
 import com.remind.rmvc.Application;
 import com.remind.rmvc.context.HttpContext;
+import com.remind.rmvc.internal.ActionInfo;
 import com.remind.rmvc.internal.ActionResult;
 import com.remind.rmvc.internal.PathMatcher;
-import com.remind.rmvc.model.ActionInfo;
 import com.remind.rmvc.route.Router;
 
 /**
@@ -20,16 +20,14 @@ import com.remind.rmvc.route.Router;
 public class DefaultRouter implements Router{
 	
 	private PathMatcher matcher;
-	private HttpContext httpContext;
+	private HttpContext httpContext = HttpContext.getCurrent();
 	
-	public ActionResult route(HttpContext httpContext) {
+	public ActionResult route() {
 		ActionResult actionResult = new ActionResult();
-		this.httpContext = httpContext;
 		String path = httpContext.getMatchPath();
 		for(ActionInfo ai : Application.getAllAction()) {
 			String clsPattern = ai.getClassPathPattern();
 			String methodPattern = ai.getMethodPathPattern();
-			
 			String pattern = PathMatcher.combine(clsPattern, methodPattern);
 			matcher = new PathMatcher(pattern, path);
 			if (matcher.doMatch() && compareMethod(ai)) {
@@ -51,6 +49,8 @@ public class DefaultRouter implements Router{
 						| InvocationTargetException | InstantiationException e) {
 					e.printStackTrace();
 				}
+			} else {
+				actionResult = null;
 			}
 		}
 		return actionResult;

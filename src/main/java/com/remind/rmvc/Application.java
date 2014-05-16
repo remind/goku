@@ -5,8 +5,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Sets;
+import com.remind.rmvc.internal.ActionInfo;
 import com.remind.rmvc.internal.ScanAction;
-import com.remind.rmvc.model.ActionInfo;
 
 /**
  * 主要用来进行启动时的一些初始化

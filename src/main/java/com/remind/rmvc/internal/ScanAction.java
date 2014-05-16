@@ -10,7 +10,6 @@ import com.google.common.collect.Sets;
 import com.remind.rmvc.annotations.GET;
 import com.remind.rmvc.annotations.POST;
 import com.remind.rmvc.annotations.Path;
-import com.remind.rmvc.model.ActionInfo;
 import com.remind.rmvc.utils.ClassUtil;
 import com.remind.rmvc.utils.ClassUtil.ClassFilter;
 

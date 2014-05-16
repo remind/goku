@@ -1,4 +1,4 @@
-package com.remind.rmvc.model;
+package com.remind.rmvc.internal;
 
 import java.lang.reflect.Method;
 import java.util.Map;
