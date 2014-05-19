@@ -135,15 +135,15 @@ public class ActionInfo {
 	
 	@Override
 	public String toString() {
-		String s = "\n";
-		s += "ClassPathPattern:" + this.classPathPattern + '\n';
-		s += "MethodPathPattern:" + this.methodPathPattern + '\n';
-		s += "Controller:" + this.cls + '\n';
-		s += "Method:" + this.method + '\n';
-		s += "Method Param:" + this.param.toString() + '\n';
-		s += "POST:" + this.isPost + '\n';
-		s += "GET:" + this.isGet + '\n';
-		return s;
+		StringBuilder s = new StringBuilder("\n");
+		s.append("ClassPathPattern:" + this.classPathPattern + '\n');
+		s.append("MethodPathPattern:" + this.methodPathPattern + '\n');
+		s.append("Controller:" + this.cls + '\n');
+		s.append("Method:" + this.method + '\n');
+		s.append("Method Param:" + this.param.toString() + '\n');
+		s.append("POST:" + this.isPost + '\n');
+		s.append("GET:" + this.isGet + '\n');
+		return s.toString();
 	}
 	
 	public boolean equals(ActionInfo target) {

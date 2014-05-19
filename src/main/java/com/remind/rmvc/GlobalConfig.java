@@ -1,8 +1,9 @@
 package com.remind.rmvc;
 
-import java.awt.FileDialog;
 import java.io.File;
 
+import com.remind.rmvc.route.Router;
+import com.remind.rmvc.route.impl.DefaultRouter;
 import com.remind.rmvc.view.View;
 import com.remind.rmvc.view.impl.TextView;
 import com.remind.rmvc.view.impl.VelocityView;
@@ -32,6 +33,11 @@ public class GlobalConfig {
 		return new File(Thread.currentThread().getContextClassLoader().getResource("/").getFile(), "views").getAbsolutePath();
 	}
 	
+	/**
+	 * 返回view
+	 * @param name
+	 * @return
+	 */
 	public static View getView(String name) {
 		if (name.equals("text")) {
 			return new TextView();
@@ -39,5 +45,13 @@ public class GlobalConfig {
 			return new VelocityView();
 		}
 		return null;
+	}
+	
+	/**
+	 * 返回mvc url 路由
+	 * @return
+	 */
+	public static Router getMvcRoute() {
+		return new DefaultRouter();
 	}
 }

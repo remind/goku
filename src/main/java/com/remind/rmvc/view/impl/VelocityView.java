@@ -62,8 +62,8 @@ public class VelocityView implements View {
 		Template template = rtInstance.getTemplate(path + suffix);
 
 		HttpServletResponse response = HttpContext.getCurrent().getResponse();
-		response.setContentType("text/html;charset=\"UTF-8\"");
-		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=\"" + GlobalConfig.ENCODING + "\"");
+		response.setCharacterEncoding(GlobalConfig.ENCODING);
 		Context context = new VelocityContext(actionResult.getModel().getAll());
 		VelocityWriter vw = null;
 		try {

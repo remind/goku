@@ -20,6 +20,10 @@ public class Application {
 	private static Application application = new Application();
 	private static Logger logger = Logger.getLogger(Application.class);
 	
+	/**
+	 * 启动应用
+	 * 作一些初始化
+	 */
 	public static void start() { 
 		if (isInit) {
 			return;
@@ -28,11 +32,11 @@ public class Application {
 		application.load();
 		isInit = true;
 	}
-	
-	public static void destroy() {
-		
-	}
 
+	/**
+	 * 返回所有action
+	 * @return
+	 */
 	public static Set<ActionInfo> getAllAction() {
 		return allAction;
 	}

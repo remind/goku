@@ -41,8 +41,8 @@ public class TestPathMatcher {
 	
 	@Test
 	public void testHandle() {
-		Assert.assertEquals("/blog/aa", PathMatcher.handle("/blog/aa/"));
-		Assert.assertEquals("/blog/aa", PathMatcher.handle("/blog//aa"));
-		Assert.assertEquals("/blog/aa", PathMatcher.handle("/blog//aa/"));
+		Assert.assertEquals("/blog/aa", PathMatcher.filter("/blog/aa/"));
+		Assert.assertEquals("/blog/aa", PathMatcher.filter("/blog//aa"));
+		Assert.assertEquals("/blog/aa", PathMatcher.filter("/blog//aa/"));
 	}
 }

@@ -3,6 +3,7 @@ package com.remind.rmvc.context;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.remind.rmvc.internal.ActionResult;
 import com.remind.rmvc.internal.PathMatcher;
 
 /**
@@ -16,7 +17,7 @@ public class HttpContext {
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	private static ThreadLocal<HttpContext> httpContextHolder =  new ThreadLocal<HttpContext>();
+	private ActionResult actionResult;
 
 	/**
 	 * 返回当前线程中的http上下文
@@ -24,12 +25,7 @@ public class HttpContext {
 	 * @return
 	 */
 	public static HttpContext getCurrent() {
-		HttpContext httpContext = httpContextHolder.get();
-		if (httpContext == null) {
-			httpContext = new HttpContext();
-			httpContextHolder.set(httpContext);
-		}
-		return httpContextHolder.get();
+		return (HttpContext) ThreadLocalContext.get().getThreadLocalVar(HttpContext.class);
 	}
 
 	public HttpServletRequest getRequest() {
@@ -48,6 +44,14 @@ public class HttpContext {
 		this.response = response;
 	}
 	
+	public ActionResult getActionResult() {
+		return actionResult;
+	}
+
+	public void setActionResult(ActionResult actionResult) {
+		this.actionResult = actionResult;
+	}
+
 	/**
 	 * 返回用于controller匹配的路径
 	 * 
@@ -55,7 +59,7 @@ public class HttpContext {
 	 */
 	public String getMatchPath() {
 		String path = request.getServletPath();
-		path = PathMatcher.handle(path);
+		path = PathMatcher.filter(path);
 		return path;
 	}
 }

@@ -16,21 +16,14 @@ public class TextView implements View {
 
 	private HttpContext httpContext = HttpContext.getCurrent();
 	
-	private String content;
-	
-	public void setContent(String content) {
-		this.content = content;
-	}
-	
-	public void setHeader(String name, String value) {
-		httpContext.getResponse().setHeader(name, value);
-	}
-	
 	@Override
 	public void render(ActionResult actionResult) {
 		try {
+			for (String name : actionResult.getHeader().keySet()) {
+				httpContext.getResponse().setHeader(name, actionResult.getHeader().get(name));
+			}
 			Writer writer = httpContext.getResponse().getWriter();
-			writer.write(content);
+			writer.write(actionResult.getModel().get("content").toString());
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {

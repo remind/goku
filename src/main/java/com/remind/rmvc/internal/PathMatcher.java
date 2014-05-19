@@ -75,7 +75,6 @@ public class PathMatcher {
 				
 				i = m + 1;
 				j = n + 1;
-				
 			}
 			
 			if ((i == patternLen && j < pathLen) || (i < patternLen && j == pathLen)) {
@@ -104,7 +103,7 @@ public class PathMatcher {
 	 */
 	public static String combine(String pattern1, String pattern2) {
 		String result = pattern1 + pattern2;
-		return handle(result);
+		return filter(result);
 	}
 	
 	/**
@@ -114,7 +113,7 @@ public class PathMatcher {
 	 * @param pattern
 	 * @return
 	 */
-	public static String handle(String path) {
+	public static String filter(String path) {
 		String result = "";
 		char[] pathArray = path.toCharArray();
 		for (int i = 0; i < path.length(); i++) {

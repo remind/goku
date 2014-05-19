@@ -1,29 +1,32 @@
 package com.remind.rmvc;
 
+import java.io.IOException;
+
 import javax.servlet.http.Cookie;
 
 import com.alibaba.fastjson.JSON;
 import com.remind.rmvc.context.HttpContext;
+import com.remind.rmvc.context.ThreadLocalContext;
 import com.remind.rmvc.internal.ActionResult;
 import com.remind.rmvc.internal.ModelMap;
-import com.remind.rmvc.view.impl.TextView;
+import com.remind.rmvc.view.View;
 import com.remind.rmvc.view.impl.VelocityView;
 
 /**
- * 顶级controller，其它controller都需要继承它
+ * 基本controller，其它所有controller都需要继承它
  * @author remind
  *
  */
-public abstract class AbstractController {
+public abstract class BaseController {
 
-	private ActionResult actionResult = new ActionResult();
+	private ActionResult actionResult = (ActionResult) ThreadLocalContext.get().getThreadLocalVar(ActionResult.class);
 	
 	protected HttpContext httpContext = HttpContext.getCurrent();
 	
-	public void init() {
-		
-	}
-	
+	/**
+	 * 获得model
+	 * @return
+	 */
 	protected ModelMap getModel() {
 		return actionResult.getModel();
 	}
@@ -43,8 +46,9 @@ public abstract class AbstractController {
 	 * @return
 	 */
 	protected ActionResult write(String content) {
-		TextView view = (TextView)GlobalConfig.getView("text");
-		view.setHeader("content-type", "text/plan; charset=" + httpContext.getRequest().getCharacterEncoding());
+		View view = GlobalConfig.getView("text");
+		getModel().add("content", content);
+		actionResult.addHeader("content-type", "text/plan; charset=" + GlobalConfig.ENCODING);
 		actionResult.setView(view);
 		return actionResult;
 	}
@@ -55,8 +59,9 @@ public abstract class AbstractController {
 	 * @return
 	 */
 	protected ActionResult writeJson(String content) {
-		TextView view = (TextView)GlobalConfig.getView("text");
-		view.setHeader("content-type", "text/json; charset=" + httpContext.getRequest().getCharacterEncoding());
+		View view = GlobalConfig.getView("text");
+		getModel().add("content", content);
+		actionResult.addHeader("content-type", "text/json; charset=" + GlobalConfig.ENCODING);
 		actionResult.setView(view);
 		return actionResult;
 	}
@@ -80,6 +85,27 @@ public abstract class AbstractController {
 		view.setPath(path);
 		actionResult.setView(view);
 		return actionResult;
+	}
+	
+	/**
+	 * 重定向
+	 * @param location
+	 * @return
+	 */
+	protected ActionResult redirect(String location) {
+		ActionResult ar = new ActionResult();
+		ar.getModel().add("location", location);
+		ar.setView(new View() {
+			@Override
+			public void render(ActionResult actionResult) {
+				try {
+					HttpContext.getCurrent().getResponse().sendRedirect(actionResult.getModel().get("location").toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		return ar;
 	}
 	
 }

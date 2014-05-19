@@ -9,5 +9,9 @@ import com.remind.rmvc.internal.ActionResult;
  */
 public interface Router {
 
+	/**
+	 * 根据url匹配action,并返回结果
+	 * @return
+	 */
 	public ActionResult route();
 }

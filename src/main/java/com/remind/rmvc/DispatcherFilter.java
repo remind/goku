@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.remind.rmvc.context.HttpContext;
+import com.remind.rmvc.context.ThreadLocalContext;
 import com.remind.rmvc.internal.ActionResult;
 
 /**
@@ -34,21 +35,21 @@ public class DispatcherFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		logger.info("接收到新请求:" + Thread.currentThread().getId());
 		HttpContext httpContext = HttpContext.getCurrent();
 		httpContext.setRequest((HttpServletRequest)request);
 		httpContext.setResponse((HttpServletResponse)response);
 		httpContext.getRequest().setCharacterEncoding(GlobalConfig.ENCODING);
-		ActionResult actionResult = GlobalFactory.getRoute().route();
+		ActionResult actionResult = GlobalConfig.getMvcRoute().route();
 		if (actionResult != null) {
 			actionResult.render();
 		} else {
 			chain.doFilter(request, response);
 		}
+		ThreadLocalContext.remove();
 	}
 
 	@Override
-	public void destroy() {
-		Application.destroy();
-	}
+	public void destroy() { }
 
 }
