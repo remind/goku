@@ -18,11 +18,6 @@ public class ActionResult {
 	private ModelMap model = new ModelMap();
 	
 	/**
-	 * 本次请求所带的参数 
-	 */
-	private ModelMap requestMap = new ModelMap();
-	
-	/**
 	 * 最终要渲染的view
 	 */
 	private View view;
@@ -38,14 +33,6 @@ public class ActionResult {
 	 */
 	public ModelMap getModel() {
 		return model;
-	}
-	
-	/**
-	 * request请求的数据封装
-	 * @return
-	 */
-	public ModelMap getRequestMap() {
-		return requestMap;
 	}
 
 	/**

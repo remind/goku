@@ -35,7 +35,6 @@ public class DispatcherFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		logger.info("接收到新请求:" + Thread.currentThread().getId());
 		HttpContext httpContext = HttpContext.getCurrent();
 		httpContext.setRequest((HttpServletRequest)request);
 		httpContext.setResponse((HttpServletResponse)response);
