@@ -57,6 +57,8 @@ public class VelocityView implements View {
 
 	@Override
 	public void render(ActionResult actionResult) {
+		actionResult.getModel().add("httpContext", HttpContext.getCurrent());
+		
 		Template template = rtInstance.getTemplate(path + suffix);
 
 		HttpServletResponse response = HttpContext.getCurrent().getResponse();

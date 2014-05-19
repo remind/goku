@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Strings;
 import com.remind.rmvc.context.HttpContext;
 import com.remind.rmvc.internal.ActionResult;
 

@@ -18,10 +18,6 @@ public class HttpContext {
 	private HttpServletResponse response;
 	private static ThreadLocal<HttpContext> httpContextHolder =  new ThreadLocal<HttpContext>();
 
-	private HttpContext() {
-
-	}
-
 	/**
 	 * 返回当前线程中的http上下文
 	 * 
@@ -62,5 +58,4 @@ public class HttpContext {
 		path = PathMatcher.handle(path);
 		return path;
 	}
-
 }
