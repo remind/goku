@@ -26,14 +26,9 @@ public class DispatcherFilter implements Filter {
 
 	private static Logger logger = Logger.getLogger(DispatcherFilter.class);
 	
-	private String encoding = "utf-8";
-	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		logger.info("filter init");
-		if (!Strings.isNullOrEmpty(filterConfig.getInitParameter("encoding"))) {
-			encoding = filterConfig.getInitParameter("encoding");
-		}
 		Application.start();
 	}
 
@@ -43,7 +38,7 @@ public class DispatcherFilter implements Filter {
 		HttpContext httpContext = HttpContext.getCurrent();
 		httpContext.setRequest((HttpServletRequest)request);
 		httpContext.setResponse((HttpServletResponse)response);
-		httpContext.getRequest().setCharacterEncoding(encoding);
+		httpContext.getRequest().setCharacterEncoding(GlobalConfig.ENCODING);
 		ActionResult actionResult = GlobalFactory.getRoute().route();
 		if (actionResult != null) {
 			actionResult.render();

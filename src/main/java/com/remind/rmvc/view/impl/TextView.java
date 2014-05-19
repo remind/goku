@@ -18,7 +18,7 @@ public class TextView implements View {
 	
 	private String content;
 	
-	public TextView(String content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	

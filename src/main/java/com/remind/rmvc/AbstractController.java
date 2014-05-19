@@ -7,6 +7,7 @@ import com.remind.rmvc.context.HttpContext;
 import com.remind.rmvc.internal.ActionResult;
 import com.remind.rmvc.internal.ModelMap;
 import com.remind.rmvc.view.impl.TextView;
+import com.remind.rmvc.view.impl.VelocityView;
 
 /**
  * 顶级controller，其它controller都需要继承它
@@ -42,7 +43,7 @@ public abstract class AbstractController {
 	 * @return
 	 */
 	protected ActionResult write(String content) {
-		TextView view = (TextView)ViewFactory.getTextView(content);
+		TextView view = (TextView)GlobalConfig.getView("text");
 		view.setHeader("content-type", "text/plan; charset=" + httpContext.getRequest().getCharacterEncoding());
 		actionResult.setView(view);
 		return actionResult;
@@ -54,7 +55,7 @@ public abstract class AbstractController {
 	 * @return
 	 */
 	protected ActionResult writeJson(String content) {
-		TextView view = (TextView)ViewFactory.getTextView(content);
+		TextView view = (TextView)GlobalConfig.getView("text");
 		view.setHeader("content-type", "text/json; charset=" + httpContext.getRequest().getCharacterEncoding());
 		actionResult.setView(view);
 		return actionResult;
@@ -67,6 +68,18 @@ public abstract class AbstractController {
 	 */
 	protected ActionResult writeJson(Object o) {
 		return writeJson(JSON.toJSONString(o));
+	}
+	
+	/**
+	 * velocity view
+	 * @param path
+	 * @return
+	 */
+	protected ActionResult view(String path) {
+		VelocityView view = (VelocityView)GlobalConfig.getView("velocity");
+		view.setPath(path);
+		actionResult.setView(view);
+		return actionResult;
 	}
 	
 }
