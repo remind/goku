@@ -18,17 +18,24 @@ import com.remind.rmvc.view.impl.VelocityView;
  *
  */
 public abstract class BaseController {
-
-	private ActionResult actionResult = (ActionResult) ThreadLocalContext.get().getThreadLocalVar(ActionResult.class);
 	
 	protected HttpContext httpContext = HttpContext.getCurrent();
+	
+	/**
+	 * 由于controller是单列的
+	 * 所以要获取ActionResult都从这个方法获得
+	 * @return
+	 */
+	private ActionResult getActionResult() {
+		return (ActionResult) ThreadLocalContext.get().getSingleThreadLocalVar(ActionResult.class);
+	}
 	
 	/**
 	 * 获得model
 	 * @return
 	 */
 	protected ModelMap getModel() {
-		return actionResult.getModel();
+		return getActionResult().getModel();
 	}
 	
 	/**
@@ -48,9 +55,9 @@ public abstract class BaseController {
 	protected ActionResult write(String content) {
 		View view = GlobalConfig.getView("text");
 		getModel().add("content", content);
-		actionResult.addHeader("content-type", "text/plan; charset=" + GlobalConfig.ENCODING);
-		actionResult.setView(view);
-		return actionResult;
+		getActionResult().addHeader("content-type", "text/plan; charset=" + GlobalConfig.ENCODING);
+		getActionResult().setView(view);
+		return getActionResult();
 	}
 	
 	/**
@@ -61,9 +68,9 @@ public abstract class BaseController {
 	protected ActionResult writeJson(String content) {
 		View view = GlobalConfig.getView("text");
 		getModel().add("content", content);
-		actionResult.addHeader("content-type", "text/json; charset=" + GlobalConfig.ENCODING);
-		actionResult.setView(view);
-		return actionResult;
+		getActionResult().addHeader("content-type", "text/json; charset=" + GlobalConfig.ENCODING);
+		getActionResult().setView(view);
+		return getActionResult();
 	}
 	
 	/**
@@ -83,8 +90,8 @@ public abstract class BaseController {
 	protected ActionResult view(String path) {
 		VelocityView view = (VelocityView)GlobalConfig.getView("velocity");
 		view.setPath(path);
-		actionResult.setView(view);
-		return actionResult;
+		getActionResult().setView(view);
+		return getActionResult();
 	}
 	
 	/**

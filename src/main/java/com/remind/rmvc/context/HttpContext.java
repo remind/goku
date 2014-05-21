@@ -25,7 +25,7 @@ public class HttpContext {
 	 * @return
 	 */
 	public static HttpContext getCurrent() {
-		return (HttpContext) ThreadLocalContext.get().getThreadLocalVar(HttpContext.class);
+		return (HttpContext) ThreadLocalContext.get().getSingleThreadLocalVar(HttpContext.class);
 	}
 
 	public HttpServletRequest getRequest() {
@@ -58,7 +58,7 @@ public class HttpContext {
 	 * @return
 	 */
 	public String getMatchPath() {
-		String path = request.getServletPath();
+		String path = request.getRequestURI().substring(request.getContextPath().length());
 		path = PathMatcher.filter(path);
 		return path;
 	}

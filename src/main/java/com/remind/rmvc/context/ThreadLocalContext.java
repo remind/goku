@@ -33,10 +33,11 @@ public class ThreadLocalContext {
 
 	/**
 	 * 得到线程变量
+	 * 一个线程同一个类只有一个实例
 	 * @param cls
 	 * @return
 	 */
-	public Object getThreadLocalVar(Class<?> cls) {
+	public Object getSingleThreadLocalVar(Class<?> cls) {
 		if (!map.containsKey(cls)) {
 			try {
 				logger.debug(Thread.currentThread().getId() + " - 创建线程变量：" + cls.getName());
