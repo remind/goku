@@ -1,7 +1,8 @@
 package org.remind.goku.internal;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 /**
  * 根据模式串匹配实际url路径
@@ -23,7 +24,7 @@ public class PathMatcher {
 	/**
 	 * url中的变量值
 	 */
-	private Map<String, String> variable = new HashMap<String, String>();
+	private Map<String, String> variable = Maps.newConcurrentMap();
 	
 	/**
 	 * url 分隔符

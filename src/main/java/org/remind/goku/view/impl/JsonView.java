@@ -6,10 +6,12 @@ import java.util.Map;
 
 import org.remind.goku.GlobalConfig;
 import org.remind.goku.context.HttpContext;
+import org.remind.goku.exception.ExceptionBuilder;
 import org.remind.goku.internal.action.ActionResult;
 import org.remind.goku.view.View;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 
 /**
  * json视图
@@ -19,7 +21,7 @@ import com.alibaba.fastjson.JSON;
 public class JsonView implements View{
 
 	private HttpContext httpContext = HttpContext.getCurrent();
-	private Map<String, String> headerMap; //默认部份，可以覆盖
+	private Map<String, String> headerMap = Maps.newConcurrentMap(); //默认部份，可以覆盖
 	
 	private Object object;
 	
@@ -43,7 +45,7 @@ public class JsonView implements View{
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ExceptionBuilder.build("输出json出错", e);
 		}
 	}
 

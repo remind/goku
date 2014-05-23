@@ -58,7 +58,7 @@ public class ScanAction {
 	 * @throws Exception 
 	 */
 	public Set<ActionInfo> getActionByClass(Class<?> cls) {
-		Set<ActionInfo> actions = new HashSet<ActionInfo>();
+		Set<ActionInfo> actions = Sets.newHashSet();
 		ControllerInfo controller = getController(cls);
 		
 		for(Method m : cls.getMethods()) {

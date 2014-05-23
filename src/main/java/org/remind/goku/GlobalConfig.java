@@ -4,9 +4,6 @@ import java.io.File;
 
 import org.remind.goku.route.Router;
 import org.remind.goku.route.impl.DefaultRouter;
-import org.remind.goku.view.View;
-import org.remind.goku.view.impl.TextView;
-import org.remind.goku.view.impl.VelocityView;
 
 /**
  * 全局配置信息
@@ -22,7 +19,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public static String getControllerPattern() {
-		return "com.remind";
+		return "org.remind";
 	}
 	
 	/**
@@ -34,7 +31,7 @@ public class GlobalConfig {
 	}
 	
 	/**
-	 * 返回mvc url 路由
+	 * 返回路由
 	 * @return
 	 */
 	public static Router getMvcRoute() {
