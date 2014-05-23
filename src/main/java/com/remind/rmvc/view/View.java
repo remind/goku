@@ -1,6 +1,6 @@
 package com.remind.rmvc.view;
 
-import com.remind.rmvc.internal.ActionResult;
+import com.remind.rmvc.internal.action.ActionResult;
 
 /**
  * 视图

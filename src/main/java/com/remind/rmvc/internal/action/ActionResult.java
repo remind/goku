@@ -1,8 +1,9 @@
-package com.remind.rmvc.internal;
+package com.remind.rmvc.internal.action;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.remind.rmvc.internal.ModelMap;
 import com.remind.rmvc.view.View;
 
 /**

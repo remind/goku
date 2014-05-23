@@ -13,7 +13,7 @@ import org.apache.velocity.runtime.RuntimeInstance;
 
 import com.remind.rmvc.GlobalConfig;
 import com.remind.rmvc.context.HttpContext;
-import com.remind.rmvc.internal.ActionResult;
+import com.remind.rmvc.internal.action.ActionResult;
 import com.remind.rmvc.view.View;
 
 public class VelocityView implements View {

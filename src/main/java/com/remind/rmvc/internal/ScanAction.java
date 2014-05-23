@@ -7,9 +7,15 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Sets;
-import com.remind.rmvc.annotations.GET;
-import com.remind.rmvc.annotations.POST;
+import com.remind.rmvc.BaseController;
+import com.remind.rmvc.annotations.Get;
+import com.remind.rmvc.annotations.Interceptor;
+import com.remind.rmvc.annotations.Post;
 import com.remind.rmvc.annotations.Path;
+import com.remind.rmvc.exception.ExceptionBuilder;
+import com.remind.rmvc.interceptor.ActionInterceptor;
+import com.remind.rmvc.internal.action.ActionInfo;
+import com.remind.rmvc.internal.action.ControllerInfo;
 import com.remind.rmvc.utils.ClassUtil;
 import com.remind.rmvc.utils.ClassUtil.ClassFilter;
 
@@ -25,13 +31,15 @@ public class ScanAction {
 	 * 扫描所有controller，并返回
 	 * @param scanPackName	要扫描的包路径
 	 * @return
+	 * @throws Exception 
 	 */
 	public Set<ActionInfo> getActionByPackage(String scanPackName) {
 		Set<ActionInfo> actions = Sets.newHashSet();
 		Set<Class<?>> classes = ClassUtil.getClasses(scanPackName, new ClassFilter() {
 			@Override
 			public boolean accept(Class<?> cls) {
-				if (cls.getName().endsWith("Controller")) {
+				if (cls.getName().endsWith("Controller") && BaseController.class.isAssignableFrom(cls)
+						&& !cls.getName().endsWith(BaseController.class.getName())) { 
 					return true;
 				}
 				return false;
@@ -47,70 +55,111 @@ public class ScanAction {
 	 * 根据controller类返回其所有action
 	 * @param cls
 	 * @return
+	 * @throws Exception 
 	 */
 	public Set<ActionInfo> getActionByClass(Class<?> cls) {
-		Set<ActionInfo> action = new HashSet<ActionInfo>();
+		Set<ActionInfo> actions = new HashSet<ActionInfo>();
+		ControllerInfo controller = getController(cls);
+		
 		for(Method m : cls.getMethods()) {
 			if (m.getAnnotation(Path.class) != null) {
-				ActionInfo actionInfo = new ActionInfo();
-				if (cls.getAnnotation(Path.class) != null) {
-					actionInfo.setClassPathPattern(cls.getAnnotation(Path.class).value());
-				} else {
-					actionInfo.setClassPathPattern("");
-				}
-				try {
-					actionInfo.setControllerClass(cls.newInstance());
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				actionInfo.setCls(cls);
-				actionInfo.setMethod(m);
-				actionInfo.setParam(ClassUtil.getMethodParam(cls, m));
-				actionInfo.setMethodPathPattern(m.getAnnotation(Path.class).value());
-				actionInfo.setPost(isPost(cls, m));
-				actionInfo.setGet(isGet(cls, m));
-				action.add(actionInfo);
+				ActionInfo actionInfo = getAction(controller, cls, m);
+				actions.add(actionInfo);
 				logger.info("controller - " + actionInfo.toString());
 			}
 		}
-		return action;
+		return actions;
 	}
 	
 	/**
-	 * 是否为post
+	 * 获得action
+	 * @param controller
 	 * @param cls
-	 * @param method
+	 * @param m
 	 * @return
 	 */
-	private boolean isPost(Class<?> cls, Method method) {
-		boolean result = true;
-		if (cls.getAnnotation(POST.class) == null && cls.getAnnotation(GET.class) != null) {
-			result = false;
+	private ActionInfo getAction(ControllerInfo controller, Class<?> cls, Method m) {
+		ActionInfo actionInfo = new ActionInfo(controller);
+		
+		if (cls.getAnnotation(Path.class) != null) {
+			actionInfo.setUriPattern(m.getAnnotation(Path.class).value());
+		} else {
+			actionInfo.setUriPattern("");
 		}
-		if (method.getAnnotation(POST.class) != null) {
-			result = true;
-		} else if (method.getAnnotation(POST.class) == null && method.getAnnotation(GET.class) != null) {
-			result = false;
+		
+		if (m.getAnnotation(Interceptor.class) != null) {
+			Class<? extends ActionInterceptor>[] interceptorMethod = m.getAnnotation(Interceptor.class).value();
+			ActionInterceptor[] interceptorInstance = new ActionInterceptor[interceptorMethod.length];
+			for (int i = 0; i < interceptorMethod.length; i++) {
+				try {
+					interceptorInstance[i] = interceptorMethod[i].newInstance();
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+					interceptorInstance[i] = null;
+				}
+			}
+			actionInfo.setInterceptor(interceptorInstance);
+		} else {
+			actionInfo.setInterceptor(new ActionInterceptor[0]);
 		}
-		return result;
+		
+		actionInfo.setMethod(m);
+		actionInfo.setParam(ClassUtil.getMethodParam(cls, m));
+		actionInfo.setMethodPost(methodIsPost(m));
+		actionInfo.setMethodGet(methodIsGet(m));
+		return actionInfo;
 	}
 	
 	/**
-	 * 是否为get
+	 * 获得controller
 	 * @param cls
-	 * @param method
 	 * @return
 	 */
-	private boolean isGet(Class<?> cls, Method method) {
-		boolean result = true;
-		if (cls.getAnnotation(GET.class) == null && cls.getAnnotation(POST.class) != null) {
-			result = false;
+	private ControllerInfo getController(Class<?> cls) {
+		ControllerInfo controller = new ControllerInfo();
+		if (cls.getAnnotation(Path.class) != null) {
+			controller.setUriPattern(cls.getAnnotation(Path.class).value());
+		} else {
+			controller.setUriPattern("");
 		}
-		if (method.getAnnotation(GET.class) != null) {
-			result = true;
-		} else if (method.getAnnotation(GET.class) == null && method.getAnnotation(POST.class) != null) {
-			result = false;
+		if (cls.getAnnotation(Interceptor.class) != null) {
+			Class<? extends ActionInterceptor>[] interceptorClzz = cls.getAnnotation(Interceptor.class).value();
+			ActionInterceptor[] interceptorInstance = new ActionInterceptor[interceptorClzz.length];
+			for (int i = 0; i < interceptorClzz.length; i++) {
+				try {
+					interceptorInstance[i] = interceptorClzz[i].newInstance();
+				} catch (InstantiationException | IllegalAccessException e) {
+					throw ExceptionBuilder.build("获取contoller出错" + controller.getClass().getName() , e);
+				}
+			}
+			controller.setInterceptor(interceptorInstance);
+		} else {
+			controller.setInterceptor(new ActionInterceptor[0]);
 		}
-		return result;
+		controller.setClazz(cls);
+		try {
+			controller.setInstance(cls.newInstance());
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw ExceptionBuilder.build("获取controller出错:" + controller.getClass().getName(), e);
+		}
+		controller.setPost(controllerIsPost(cls));
+		controller.setGet(controllerIsGet(cls));
+		return controller;
+	}
+	
+	private boolean controllerIsPost(Class<?> cls) {
+		return cls.getAnnotation(Post.class) != null || cls.getAnnotation(Get.class) == null;
+	}
+	
+	private boolean controllerIsGet(Class<?> cls) {
+		return cls.getAnnotation(Get.class) != null || cls.getAnnotation(Post.class) == null;
+	}
+	
+	private boolean methodIsPost(Method method) {
+		return method.getAnnotation(Post.class) != null || method.getAnnotation(Get.class) == null;
+	}
+	
+	private boolean methodIsGet(Method method) {
+		return method.getAnnotation(Get.class) != null || method.getAnnotation(Post.class) == null;
 	}
 }

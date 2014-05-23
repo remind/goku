@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import javax.servlet.http.Cookie;
 
-import com.alibaba.fastjson.JSON;
 import com.remind.rmvc.context.HttpContext;
 import com.remind.rmvc.context.ThreadLocalContext;
-import com.remind.rmvc.internal.ActionResult;
 import com.remind.rmvc.internal.ModelMap;
+import com.remind.rmvc.internal.action.ActionResult;
 import com.remind.rmvc.view.View;
+import com.remind.rmvc.view.impl.JsonView;
+import com.remind.rmvc.view.impl.TextView;
 import com.remind.rmvc.view.impl.VelocityView;
 
 /**
@@ -53,23 +54,7 @@ public abstract class BaseController {
 	 * @return
 	 */
 	protected ActionResult write(String content) {
-		View view = GlobalConfig.getView("text");
-		getModel().add("content", content);
-		getActionResult().addHeader("content-type", "text/plan; charset=" + GlobalConfig.ENCODING);
-		getActionResult().setView(view);
-		return getActionResult();
-	}
-	
-	/**
-	 * 输出json串到页面
-	 * @param content
-	 * @return
-	 */
-	protected ActionResult writeJson(String content) {
-		View view = GlobalConfig.getView("text");
-		getModel().add("content", content);
-		getActionResult().addHeader("content-type", "text/json; charset=" + GlobalConfig.ENCODING);
-		getActionResult().setView(view);
+		getActionResult().setView(new TextView(content));
 		return getActionResult();
 	}
 	
@@ -79,7 +64,8 @@ public abstract class BaseController {
 	 * @return
 	 */
 	protected ActionResult writeJson(Object o) {
-		return writeJson(JSON.toJSONString(o));
+		getActionResult().setView(new JsonView(o));
+		return getActionResult();
 	}
 	
 	/**
@@ -88,7 +74,7 @@ public abstract class BaseController {
 	 * @return
 	 */
 	protected ActionResult view(String path) {
-		VelocityView view = (VelocityView)GlobalConfig.getView("velocity");
+		VelocityView view = new VelocityView();
 		view.setPath(path);
 		getActionResult().setView(view);
 		return getActionResult();
@@ -114,5 +100,4 @@ public abstract class BaseController {
 		});
 		return ar;
 	}
-	
 }

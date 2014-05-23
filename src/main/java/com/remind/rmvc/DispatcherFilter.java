@@ -1,7 +1,6 @@
 package com.remind.rmvc;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,8 +15,9 @@ import org.apache.log4j.Logger;
 
 import com.remind.rmvc.context.HttpContext;
 import com.remind.rmvc.context.ThreadLocalContext;
-import com.remind.rmvc.internal.ActionInfo;
-import com.remind.rmvc.internal.ActionResult;
+import com.remind.rmvc.internal.action.ActionInvoke;
+import com.remind.rmvc.internal.action.ActionResult;
+import com.remind.rmvc.internal.cache.RouteResultCache;
 import com.remind.rmvc.route.RouteInfo;
 import com.remind.rmvc.route.RouteResult;
 
@@ -30,11 +30,16 @@ import com.remind.rmvc.route.RouteResult;
 public class DispatcherFilter implements Filter {
 
 	private static Logger logger = Logger.getLogger(DispatcherFilter.class);
+	private static final ActionInvoke actionInvoke = new ActionInvoke();
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		logger.info("filter init");
-		Application.start();
+		try {
+			Application.start();
+		} catch (Exception e) {
+			System.exit(0);
+		}
 	}
 
 	@Override
@@ -44,7 +49,24 @@ public class DispatcherFilter implements Filter {
 		httpContext.setRequest((HttpServletRequest) request);
 		httpContext.setResponse((HttpServletResponse) response);
 		httpContext.getRequest().setCharacterEncoding(GlobalConfig.ENCODING);
-		if (!doDispatch()) {
+		RouteResult routeResult;
+		if (RouteResultCache.get(HttpContext.getCurrent().getMatchPath()) != null) {
+			routeResult = RouteResultCache.get(HttpContext.getCurrent().getMatchPath());
+		}
+		else {
+			routeResult = GlobalConfig.getMvcRoute().route(
+				new RouteInfo(HttpContext.getCurrent().getMatchPath(),
+						HttpContext.getCurrent().getRequest().getMethod()
+								.equalsIgnoreCase("GET")));
+		}
+		if (routeResult.isSuccess()) { // 路由匹配成功
+			ActionResult result = actionInvoke.invoke(routeResult.getAction(), routeResult.getUriPatternVariable());
+			if (result != null) {
+				result.render();
+			} else {
+				//#TODO
+			}
+		} else {
 			chain.doFilter(request, response);
 		}
 		ThreadLocalContext.remove();
@@ -52,33 +74,6 @@ public class DispatcherFilter implements Filter {
 
 	@Override
 	public void destroy() {
-	}
-
-	/**
-	 * 进行分发
-	 * 
-	 * @return
-	 */
-	protected boolean doDispatch() {
-		RouteResult routeResult = GlobalConfig.getMvcRoute().route(
-				new RouteInfo(HttpContext.getCurrent().getMatchPath(),
-						HttpContext.getCurrent().getRequest().getMethod()
-								.equalsIgnoreCase("GET")));
-		if (routeResult.isSuccess()) { // 路由匹配成功
-			ActionInfo action = routeResult.getAction();
-			try {
-				ActionResult result = (ActionResult) action.getMethod().invoke(
-						action.getControllerClass(),
-						routeResult.getVariable().values().toArray());
-				result.render();
-			} catch (IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e) {
-				e.printStackTrace();
-			}
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 }

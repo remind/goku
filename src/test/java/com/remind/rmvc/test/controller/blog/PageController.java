@@ -1,6 +1,6 @@
 package com.remind.rmvc.test.controller.blog;
 
-import com.remind.rmvc.annotations.GET;
+import com.remind.rmvc.annotations.Get;
 import com.remind.rmvc.annotations.Path;
 
 /**
@@ -10,11 +10,11 @@ import com.remind.rmvc.annotations.Path;
  *
  */
 @Path("/blog/page")
-@GET
+@Get
 public class PageController {
 
 	@Path("/tag")
-	@GET
+	@Get
 	public void tag(String name) {
 		//System.out.println("hello " + name);
 	}

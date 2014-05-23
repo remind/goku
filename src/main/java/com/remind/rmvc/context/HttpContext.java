@@ -3,8 +3,8 @@ package com.remind.rmvc.context;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.remind.rmvc.internal.ActionResult;
 import com.remind.rmvc.internal.PathMatcher;
+import com.remind.rmvc.internal.action.ActionResult;
 
 /**
  * 管理每次请求的上下文信息

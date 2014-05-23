@@ -34,20 +34,6 @@ public class GlobalConfig {
 	}
 	
 	/**
-	 * 返回view
-	 * @param name
-	 * @return
-	 */
-	public static View getView(String name) {
-		if (name.equals("text")) {
-			return new TextView();
-		} else if(name.equals("velocity")) {
-			return new VelocityView();
-		}
-		return null;
-	}
-	
-	/**
 	 * 返回mvc url 路由
 	 * @return
 	 */

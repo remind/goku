@@ -2,29 +2,29 @@ package com.remind.rmvc.view.impl;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.remind.rmvc.GlobalConfig;
 import com.remind.rmvc.context.HttpContext;
 import com.remind.rmvc.internal.action.ActionResult;
 import com.remind.rmvc.view.View;
 
 /**
- * 直接输出文本到浏览器
+ * json视图
  * @author remind
  *
  */
-public class TextView implements View {
+public class JsonView implements View{
 
 	private HttpContext httpContext = HttpContext.getCurrent();
-	private Map<String, String> headerMap = new HashMap<String, String>(); //默认部份，可以覆盖
+	private Map<String, String> headerMap; //默认部份，可以覆盖
 	
-	private String content;
+	private Object object;
 	
-	public TextView(String content) {
-		this.content = content;
-		headerMap.put("content-type", "text/plan; charset=" + GlobalConfig.ENCODING);
+	public JsonView(Object object) {
+		this.object = object;
+		headerMap.put("content-type", "text/json; charset=" + GlobalConfig.ENCODING);
 	}
 	
 	public Map<String, String> getHeaderMap() {
@@ -38,11 +38,12 @@ public class TextView implements View {
 				httpContext.getResponse().setHeader(name, this.headerMap.get(name));
 			}
 			Writer writer = httpContext.getResponse().getWriter();
-			writer.write(content);
+			writer.write(JSON.toJSONString(object));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 }

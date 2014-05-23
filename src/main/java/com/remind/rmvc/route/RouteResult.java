@@ -2,7 +2,7 @@ package com.remind.rmvc.route;
 
 import java.util.Map;
 
-import com.remind.rmvc.internal.ActionInfo;
+import com.remind.rmvc.internal.action.ActionInfo;
 
 /**
  * 路由结果
@@ -24,7 +24,7 @@ public class RouteResult {
 	/**
 	 * 所匹配的参数变量
 	 */
-	private Map<String, String> variable;
+	private Map<String, String> uriPatternVariable;
 
 	public boolean isSuccess() {
 		return success;
@@ -42,11 +42,11 @@ public class RouteResult {
 		this.action = action;
 	}
 
-	public Map<String, String> getVariable() {
-		return variable;
+	public Map<String, String> getUriPatternVariable() {
+		return uriPatternVariable;
 	}
 
-	public void setVariable(Map<String, String> variable) {
-		this.variable = variable;
+	public void setUriPatternVariable(Map<String, String> uriPatternVariable) {
+		this.uriPatternVariable = uriPatternVariable;
 	}
 }
