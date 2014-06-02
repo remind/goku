@@ -19,7 +19,7 @@ public class VelocityView implements View {
 
 	private static RuntimeInstance rtInstance;
 	private String path;
-	private final String suffix = ".vm";
+	private final String suffix = ".html";
 	static {
 		Properties ps = new Properties();
 		ps.setProperty("resource.loader", "file");
