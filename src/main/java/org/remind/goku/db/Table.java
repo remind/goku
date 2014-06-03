@@ -68,6 +68,9 @@ public class Table {
 		sbSql.append(" where id = ?");
 		sqlParam.set(id);
 		this.recordMap = Db.findSingle(sbSql.toString(), sqlParam);
+		if (this.recordMap.size() < 1) {
+			return null;
+		}
 		return this;
 	}
 	
@@ -108,7 +111,15 @@ public class Table {
 	public java.util.Date getDate(String columnName) {
 		return (java.util.Date)this.recordMap.get(columnName);
 	}
-	
+
+	/**
+	 * 返回map形式的所有数据
+	 * @return
+	 */
+	public Map<String, Object> getRecordMap() {
+		return recordMap;
+	}
+
 	/**
 	 * 根据条件查询返回多条map格式的
 	 * @param where

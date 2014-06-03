@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.remind.goku.utils.converter.ConverterFactory;
+
 /**
  * sql参数对象，与sql中?的顺序一致
  * @author remind
@@ -89,15 +91,15 @@ public class SqlParam {
 			Class<?> type = sqlParam.getType(i);
 			try {
 				if (type == Integer.class) {
-					ps.setInt(i, (int) value);
+					ps.setInt(i + 1, (int) value);
 				} else if (type == String.class) {
-					ps.setString(i, (String)value);
-				} else if (type == java.sql.Date.class) {
-					ps.setDate(i, (java.sql.Date)value);
+					ps.setString(i + 1, value.toString());
+				} else if (type == java.sql.Date.class) { //下面几个都有bug
+					ps.setDate(i + 1, (java.sql.Date)value);
 				} else if (type == Byte.class) {
-					ps.setByte(i, (Byte)value);
+					ps.setByte(i + 1, (Byte)value);
 				} else { 
-					ps.setObject(i, value);
+					ps.setObject(i + 1, value);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
