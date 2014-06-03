@@ -2,7 +2,6 @@ package org.remind.goku;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.remind.goku.cache.Cache;
+import org.remind.goku.cache.imp.DefaultCache;
 import org.remind.goku.context.HttpContext;
 import org.remind.goku.context.ThreadLocalContext;
 import org.remind.goku.internal.action.ActionInvoke;
@@ -21,8 +22,6 @@ import org.remind.goku.internal.action.ActionResult;
 import org.remind.goku.route.RouteInfo;
 import org.remind.goku.route.RouteResult;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * 利用Filter来拦截
@@ -34,14 +33,16 @@ public class GokuFilter implements Filter {
 
 	private static Logger logger = Logger.getLogger(GokuFilter.class);
 	private static final ActionInvoke actionInvoke = new ActionInvoke();
-	private Cache<String, RouteResult> routeResultCache = CacheBuilder.newBuilder().build();
+	private Cache<String, RouteResult> routeResultCache = new DefaultCache<String, RouteResult>();
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		logger.info("filter init");
 		try {
+			GlobalConfig.init();
 			Goku.start();
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.exit(0);
 		}
 	}
@@ -55,7 +56,8 @@ public class GokuFilter implements Filter {
 		httpContext.getRequest().setCharacterEncoding(GlobalConfig.ENCODING);
 		RouteResult routeResult;
 		try {
-			routeResult = routeResultCache.get(HttpContext.getCurrent().getMatchPath(), 
+			
+			routeResult = routeResultCache.get(String.valueOf(HttpContext.getCurrent().getMatchPath().hashCode()), 
 				new Callable<RouteResult>() {
 					@Override
 					public RouteResult call() {
@@ -77,7 +79,7 @@ public class GokuFilter implements Filter {
 			} else {
 				chain.doFilter(request, response);
 			}
-		} catch (ExecutionException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
