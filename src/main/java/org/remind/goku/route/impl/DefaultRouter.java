@@ -29,7 +29,7 @@ public class DefaultRouter implements Router {
 			ControllerInfo controller = ai.getController();
 			String pattern = PathMatcher.combine(controller.getUriPattern(),
 					ai.getUriPattern());
-			matcher = new PathMatcher(pattern, path);
+			matcher = new PathMatcher(pattern, path, ai.getParamInfo());
 			if (matcher.doMatch() && compareMethod(ai)) {
 				result.setSuccess(true);
 				result.setAction(ai);

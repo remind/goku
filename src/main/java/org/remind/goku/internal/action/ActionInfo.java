@@ -1,9 +1,12 @@
 package org.remind.goku.internal.action;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.remind.goku.interceptor.ActionInterceptor;
+import org.remind.goku.utils.MethodParamInfo;
 
 import com.google.common.collect.Maps;
 
@@ -36,9 +39,9 @@ public class ActionInfo {
 	private Method method;
 	
 	/**
-	 * 方法里面的参数名及其类型
+	 * 方法里面的参数信息
 	 */
-	private Map<String, Class<?>> param = Maps.newHashMap();
+	private List<MethodParamInfo>  paramInfo = new ArrayList<MethodParamInfo>();
 	
 	/**
 	 * action对应的controller
@@ -61,15 +64,15 @@ public class ActionInfo {
 	public void setMethod(Method method) {
 		this.method = method;
 	}
-
-	public Map<String, Class<?>> getParam() {
-		return param;
-	}
-
-	public void setParam(Map<String, Class<?>> param) {
-		this.param = param;
-	}
 	
+	public List<MethodParamInfo> getParamInfo() {
+		return paramInfo;
+	}
+
+	public void setParamInfo(List<MethodParamInfo> paramInfo) {
+		this.paramInfo = paramInfo;
+	}
+
 	/**
 	 * 在方法上配置的路径
 	 * @return

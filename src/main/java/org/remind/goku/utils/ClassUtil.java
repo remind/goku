@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import javassist.ClassClassPath;
@@ -20,6 +20,8 @@ import javassist.Modifier;
 import javassist.NotFoundException;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
+
+import org.remind.goku.annotations.Default;
 
 /**
  * class操作工具类
@@ -79,9 +81,9 @@ public class ClassUtil {
      * @param method
      * @return
      */
-    public static Map<String, Class<?>> getMethodParam(Class<?> clazz, Method method) {
+    public static List<MethodParamInfo> getMethodParam(Class<?> clazz, Method method) {
         Class<?>[] paramTypes = method.getParameterTypes();
-        Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+        List<MethodParamInfo> list = new ArrayList<MethodParamInfo>();
         try {
             ClassPool pool = ClassPool.getDefault();
             pool.insertClassPath(new ClassClassPath(clazz));
@@ -100,15 +102,23 @@ public class ClassUtil {
             }
             int startIndex = getStartIndex(attr);
             int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
-
+            
             for (int i = 0; i < cm.getParameterTypes().length; i++) {
-            	map.put(attr.variableName(startIndex + i + pos), method.getParameterTypes()[i]);
+            	MethodParamInfo info = new MethodParamInfo(attr.variableName(startIndex + i + pos));
+            	info.setType(method.getParameterTypes()[i]);
+            	Object[] temp = cm.getParameterAnnotations()[i];
+            	for (int j = 0; j < temp.length; j++) {
+            		if ((temp[j] instanceof Default)) {
+            			info.setDefaultValue(((Default)temp[0]).value());
+            		}
+            	}
+            	list.add(info);
             }
 
-        } catch (NotFoundException e) {
+        } catch (NotFoundException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return map;
+        return list;
     }
     
     private static int getStartIndex(LocalVariableAttribute attr) {

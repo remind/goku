@@ -1,7 +1,6 @@
 package org.remind.goku.internal;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -104,7 +103,7 @@ public class ScanAction {
 		}
 		
 		actionInfo.setMethod(m);
-		actionInfo.setParam(ClassUtil.getMethodParam(cls, m));
+		actionInfo.setParamInfo(ClassUtil.getMethodParam(cls, m));
 		actionInfo.setMethodPost(methodIsPost(m));
 		actionInfo.setMethodGet(methodIsGet(m));
 		return actionInfo;

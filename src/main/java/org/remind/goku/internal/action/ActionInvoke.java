@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.remind.goku.interceptor.ActionInterceptor;
+import org.remind.goku.utils.MethodParamInfo;
 import org.remind.goku.utils.converter.ConverterFactory;
 
 /**
@@ -29,11 +30,18 @@ public class ActionInvoke {
 					return null;
 				}
 			}
-			Object[] param = new Object[action.getParam().size()];
-			int index = 0;
-			for (String key : action.getParam().keySet()) {
-				param[index] = ConverterFactory.getConverter( action.getParam().get(key)).convert(variable.get(key).toString());
-				index ++;
+			Object[] param = new Object[action.getParamInfo().size()];
+			String temp;
+			for (int i = 0; i < action.getParamInfo().size(); i++) {
+				MethodParamInfo paramInfo = action.getParamInfo().get(i);
+				if (variable.containsKey(paramInfo.getName())) {
+					temp = variable.get(paramInfo.getName()).toString();
+				} else if (paramInfo.getDefaultValue() != null) {
+					temp = paramInfo.getDefaultValue();
+				} else {
+					temp = null;
+				}
+				param[i] = ConverterFactory.getConverter(paramInfo.getType()).convert(temp);
 			}
 			ActionResult result = (ActionResult) action.getMethod().invoke(
 					action.getController().getInstance(), param);

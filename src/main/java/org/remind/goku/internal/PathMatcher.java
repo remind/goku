@@ -1,6 +1,10 @@
 package org.remind.goku.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import org.remind.goku.utils.MethodParamInfo;
 
 import com.google.common.collect.Maps;
 
@@ -12,9 +16,11 @@ import com.google.common.collect.Maps;
 public class PathMatcher {
 	
 	/**
-	 * 模式串
+	 * 配置的模式串
 	 */
 	private String pattern;
+	
+	private List<MethodParamInfo> paramList = new ArrayList<MethodParamInfo>();
 	
 	/**
 	 * 实际url路径
@@ -37,13 +43,15 @@ public class PathMatcher {
 	 * @param pattern	模式串
 	 * @param path	url实际路径
 	 */
-	public PathMatcher(String pattern, String path) {
+	public PathMatcher(String pattern, String path, List<MethodParamInfo> list) {
 		this.pattern = pattern;
 		this.path = path;
+		this.paramList = list;
 	}
 
 	/**
 	 * 开始匹配
+	 * 这个可能还是得再换成 ant path更可靠
 	 * @return <p>true:匹配成功</p> <p>false:没有匹配上</p>
 	 */
 	public boolean doMatch() {
@@ -54,7 +62,6 @@ public class PathMatcher {
 		if ((pattern.equals("") && !path.equals("")) || ((path.equals("") && !pattern.equals("")))) {
 			return false;
 		}
-		
 		
 		char[] patternArray = pattern.toCharArray();
 		char[] pathArray = path.toCharArray();
@@ -78,10 +85,28 @@ public class PathMatcher {
 				} else {
 					n -= 1;
 				}
-				variable.put(pattern.substring(i + 1, m), path.substring(j, n + 1));
+				String paramName = pattern.substring(i + 1, m);
+				String paramValue = path.substring(j, n + 1);
+				
+				variable.put(paramName, paramValue);
 				
 				i = m + 1;
 				j = n + 1;
+			}
+			
+			if (i < patternLen && j == pathLen) { //为了兼容有默认值的，当前只处理了默认值在最后面的情况
+				for (int m = 0; m < paramList.size(); m++) {
+					MethodParamInfo paramInfo = paramList.get(m);
+					if (paramInfo.getDefaultValue() != null) {
+						String s = pattern.replaceAll("\\{"+ paramInfo.getName() +"\\}", "");
+						if (s.endsWith(String.valueOf(DEFAULT_SEPARATE))) {
+							s = s.substring(0, s.length() - 1);
+						}
+						patternArray = s.toCharArray();
+						patternLen = pathArray.length;
+						variable.put(paramInfo.getName(), paramInfo.getDefaultValue());
+					}
+				}
 			}
 			
 			if ((i == patternLen && j < pathLen) || (i < patternLen && j == pathLen)) {
@@ -132,5 +157,10 @@ public class PathMatcher {
 			result = result.substring(0, result.length() - 1);
 		}
 		return result;
+	}
+	
+	public static void main(String[] args) {
+		String s = "hot/{page}";
+		System.out.println(s.replaceAll("\\{page\\}", ""));
 	}
 }
