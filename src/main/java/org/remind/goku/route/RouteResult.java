@@ -24,7 +24,7 @@ public class RouteResult {
 	/**
 	 * 所匹配的参数变量
 	 */
-	private Map<String, String> uriPatternVariable;
+	private Map<String, Object> uriPatternVariable;
 
 	public boolean isSuccess() {
 		return success;
@@ -42,11 +42,11 @@ public class RouteResult {
 		this.action = action;
 	}
 
-	public Map<String, String> getUriPatternVariable() {
+	public Map<String, Object> getUriPatternVariable() {
 		return uriPatternVariable;
 	}
 
-	public void setUriPatternVariable(Map<String, String> uriPatternVariable) {
+	public void setUriPatternVariable(Map<String, Object> uriPatternVariable) {
 		this.uriPatternVariable = uriPatternVariable;
 	}
 }

@@ -1,8 +1,11 @@
 package org.remind.goku;
 
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.remind.goku.db.sql.SqlConnection;
 import org.remind.goku.internal.ScanAction;
 import org.remind.goku.internal.action.ActionInfo;
 
@@ -43,6 +46,7 @@ public class Goku {
 	
 	private void load() {
 		scanAction();
+		initDataSource();
 	}
 	
 	/**
@@ -52,7 +56,26 @@ public class Goku {
 		logger.info("扫描action");
 		ScanAction scanAction = new ScanAction();
 		allAction.clear();
-		allAction = scanAction.getActionByPackage(GlobalConfig.getControllerPattern());
+		allAction = scanAction.getActionByPackage(GlobalConfig.getBasePackage());
+	}
+	
+	/**
+	 * 初始化数据源
+	 */
+	private void initDataSource() {
+		Properties pro = new Properties();
+		Properties configPro = GlobalConfig.getConfig();
+
+		Enumeration<Object> enu = configPro.keys();
+		String prefix = "datasource.";
+		while (enu.hasMoreElements()) {
+			String key = enu.nextElement().toString();
+			if (key.startsWith(prefix)) {
+				pro.setProperty(key.substring(prefix.length()), configPro.getProperty(key).trim());
+			}
+		}
+		SqlConnection.initDataSource(pro);
+		logger.info("初始化数据源成功");
 	}
 	
 }

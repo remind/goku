@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.remind.goku.interceptor.ActionInterceptor;
+import org.remind.goku.utils.converter.ConverterFactory;
 
 /**
  * 执行action
@@ -19,7 +20,7 @@ public class ActionInvoke {
 	 * @param variable
 	 * @return
 	 */
-	public ActionResult invoke(ActionInfo action, Map<String, String> variable) {
+	public ActionResult invoke(ActionInfo action, Map<String, Object> variable) {
 		try {
 			ActionInterceptor[] interceptors = (ActionInterceptor[]) ArrayUtils.addAll(action.getController().getInterceptor(), action.getInterceptor());
 			int len = interceptors.length;
@@ -28,10 +29,14 @@ public class ActionInvoke {
 					return null;
 				}
 			}
-			
+			Object[] param = new Object[action.getParam().size()];
+			int index = 0;
+			for (String key : action.getParam().keySet()) {
+				param[index] = ConverterFactory.getConverter( action.getParam().get(key)).convert(variable.get(key).toString());
+				index ++;
+			}
 			ActionResult result = (ActionResult) action.getMethod().invoke(
-					action.getController().getInstance(),
-					variable.values().toArray());
+					action.getController().getInstance(), param);
 			
 			for (int i = 1; i <= len; i++) {
 				result = interceptors[len - i].PostHandle(result);

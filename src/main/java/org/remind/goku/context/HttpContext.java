@@ -62,4 +62,13 @@ public class HttpContext {
 		path = PathMatcher.filter(path);
 		return path;
 	}
+	
+	public String getBasePath() {
+		String basePath = request.getScheme()+"://"+request.getServerName();
+		if (request.getServerPort() != 80) {
+			basePath += ":" + request.getServerPort();
+		}
+		basePath += request.getContextPath();
+		return basePath;
+	}
 }

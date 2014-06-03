@@ -24,7 +24,7 @@ public class PathMatcher {
 	/**
 	 * url中的变量值
 	 */
-	private Map<String, String> variable = Maps.newConcurrentMap();
+	private Map<String, Object> variable = Maps.newConcurrentMap();
 	
 	/**
 	 * url 分隔符
@@ -50,6 +50,12 @@ public class PathMatcher {
 		if (pattern.equals(path)) { //相等
 			return true;
 		}
+		
+		if ((pattern.equals("") && !path.equals("")) || ((path.equals("") && !pattern.equals("")))) {
+			return false;
+		}
+		
+		
 		char[] patternArray = pattern.toCharArray();
 		char[] pathArray = path.toCharArray();
 		int i = 0;
@@ -92,7 +98,7 @@ public class PathMatcher {
 	 * 获取变量值
 	 * @return
 	 */
-	public Map<String, String> getVariable() {
+	public Map<String, Object> getVariable() {
 		return variable;
 	}
 	
