@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.remind.goku.db.sql.SqlConnection;
 import org.remind.goku.db.sql.SqlParam;
 
@@ -20,6 +21,8 @@ import org.remind.goku.db.sql.SqlParam;
  */
 public class Db {
 
+	private static Logger logger = Logger.getLogger(Db.class);
+	
 	/**
 	 * 根据sql返回多条
 	 * 
@@ -34,7 +37,11 @@ public class Db {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps = SqlParam.build(ps, sqlParam);
+			logger.info("执行sql:" + sql);
+			if (sqlParam != null) {
+				logger.info("参数" + sqlParam.getValues());
+				ps = SqlParam.build(ps, sqlParam);
+			}
 			ResultSet rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -62,6 +69,7 @@ public class Db {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+			logger.info("执行sql:" + sql);
 			ResultSet rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -90,7 +98,11 @@ public class Db {
 		Connection conn = SqlConnection.getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps = SqlParam.build(ps, sqlParam);
+			logger.info("执行sql:" + sql);
+			if (sqlParam != null) {
+				logger.info("参数" + sqlParam.getValues());
+				ps = SqlParam.build(ps, sqlParam);
+			}
 			ResultSet rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -116,6 +128,7 @@ public class Db {
 		Connection conn = SqlConnection.getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+			logger.info("执行sql:" + sql);
 			ResultSet rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -142,6 +155,8 @@ public class Db {
 		Connection conn = SqlConnection.getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+			logger.info("执行sql:" + sql);
+			logger.info("参数" + sqlParam.getValues());
 			ps = SqlParam.build(ps, sqlParam);
 			return ps.execute();
 		} catch (SQLException e) {
@@ -157,7 +172,7 @@ public class Db {
 	/**
 	 * 关闭连接
 	 */
-	public void close() {
+	public static void close() {
 		try {
 			SqlConnection.getConnection().close();
 		} catch (SQLException e) {

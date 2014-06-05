@@ -17,6 +17,8 @@ import org.remind.goku.cache.Cache;
 import org.remind.goku.cache.imp.DefaultCache;
 import org.remind.goku.context.HttpContext;
 import org.remind.goku.context.ThreadLocalContext;
+import org.remind.goku.db.Db;
+import org.remind.goku.db.sql.SqlConnection;
 import org.remind.goku.internal.action.ActionInvoke;
 import org.remind.goku.internal.action.ActionResult;
 import org.remind.goku.route.RouteInfo;
@@ -76,6 +78,7 @@ public class GokuFilter implements Filter {
 				} else {
 					// #TODO
 				}
+				Db.close();
 			} else {
 				chain.doFilter(request, response);
 			}
