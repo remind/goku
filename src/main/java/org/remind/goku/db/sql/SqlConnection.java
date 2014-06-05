@@ -17,6 +17,9 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 public class SqlConnection {
 
 	private static DataSource dataSource;
+	
+	private static ThreadLocal<Connection> connThreadLocal = new ThreadLocal<Connection>();
+	
 
 	/**
 	 * 初始化数据源
@@ -36,10 +39,17 @@ public class SqlConnection {
 	 */
 	public static Connection getConnection() {
 		try {
-			return dataSource.getConnection();
+			if (connThreadLocal.get() == null) {
+				connThreadLocal.set(dataSource.getConnection());
+			}
+			return connThreadLocal.get();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static DataSource getDataSource() {
+		return dataSource;
 	}
 }

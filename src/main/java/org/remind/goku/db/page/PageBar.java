@@ -20,7 +20,7 @@ public class PageBar {
 	/**
 	 * 总记录数
 	 */
-	private int totalRecordNumber;
+	private long totalRecordNumber;
 	
 	/**
 	 * 生成换页链接
@@ -63,7 +63,7 @@ public class PageBar {
 	 * 获取记录总条数
 	 * @return
 	 */
-	public int getTotalRecordNumber() {
+	public long getTotalRecordNumber() {
 		return totalRecordNumber;
 	}
 
@@ -71,7 +71,7 @@ public class PageBar {
 	 * 记录总条数
 	 * @param totalRecordNumber
 	 */
-	public void setTotalRecordNumber(int totalRecordNumber) {
+	public void setTotalRecordNumber(long totalRecordNumber) {
 		this.totalRecordNumber = totalRecordNumber;
 	}
 
