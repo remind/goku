@@ -34,11 +34,6 @@ public class PageBuilder<T> {
 	 */
 	private Object[] param = null;
 	
-	/**
-	 * 当页结果集
-	 */
-	private List<T> data = new ArrayList<T>();
-	
 	private Page page;
 	
 	private Class<?> entityClass;
@@ -77,16 +72,25 @@ public class PageBuilder<T> {
 	 */
 	public void execute() {
 		String totlaSql = "select count(*) as num from (" + sql + ") t";
-		String querySql = "select * from (" + sql + ") t limit ?,?";
+		String querySql;
+		Object[] params;
+		if (perPageNumber == 0) {
+			querySql = sql;
+			params = param;
+		} else {
+			querySql = "select * from (" + sql + ") t limit ?,?";
+			params = ArrayUtils.addAll(param, new Object[] {(currentPageNumber - 1) * perPageNumber, perPageNumber});
+		}
+		
 		long totalRecordNumber = DbUtilTemplate.count(totlaSql, param);
 		int totalPageNumber = (int)Math.ceil(Double.valueOf(totalRecordNumber) / Double.valueOf(perPageNumber));
 		if (entityClass == null) {
 			List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-			data = DbUtilTemplate.find(querySql, ArrayUtils.addAll(param, new Object[] {(currentPageNumber - 1) * perPageNumber, perPageNumber}));
+			data = DbUtilTemplate.find(querySql, params);
 			page = new Page<Map<String, Object>>(data, currentPageNumber, totalPageNumber, totalRecordNumber);
 		} else {
 			List<T> data = new ArrayList<T>();
-			data = DbUtilTemplate.find(entityClass, querySql, ArrayUtils.addAll(param, new Object[] {(currentPageNumber - 1) * perPageNumber, perPageNumber}));
+			data = DbUtilTemplate.find(entityClass, querySql, params);
 			page = new Page<T>(data, currentPageNumber, totalPageNumber, totalRecordNumber);
 		}
 	}

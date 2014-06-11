@@ -1,5 +1,8 @@
 package org.remind.goku.context;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +21,7 @@ public class HttpContext {
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private ActionResult actionResult;
+	private Map<String, Object> contextMap = new HashMap<String, Object>();
 
 	/**
 	 * 返回当前线程中的http上下文
@@ -70,5 +74,9 @@ public class HttpContext {
 		}
 		basePath += request.getContextPath();
 		return basePath;
+	}
+	
+	public Map<String, Object> getContextMap() {
+		return contextMap;
 	}
 }

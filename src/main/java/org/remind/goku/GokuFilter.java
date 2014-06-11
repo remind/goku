@@ -1,6 +1,7 @@
 package org.remind.goku;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.concurrent.Callable;
 
 import javax.servlet.Filter;
@@ -40,7 +41,7 @@ public class GokuFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		logger.info("filter init");
 		try {
-			GlobalConfig.init();
+			GlobalConfig.init(filterConfig.getServletContext());
 			Goku.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -51,11 +52,14 @@ public class GokuFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		HttpServletRequest re = (HttpServletRequest) request;
+		
 		HttpContext httpContext = HttpContext.getCurrent();
 		httpContext.setRequest((HttpServletRequest) request);
 		httpContext.setResponse((HttpServletResponse) response);
 		httpContext.getRequest().setCharacterEncoding(GlobalConfig.ENCODING);
 		RouteResult routeResult;
+		
 		try {
 			
 			routeResult = routeResultCache.get(String.valueOf(HttpContext.getCurrent().getMatchPath().hashCode()), 

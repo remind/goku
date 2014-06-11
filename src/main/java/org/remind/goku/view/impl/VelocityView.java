@@ -1,5 +1,7 @@
 package org.remind.goku.view.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -10,6 +12,10 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.io.VelocityWriter;
 import org.apache.velocity.runtime.RuntimeInstance;
+import org.apache.velocity.tools.Scope;
+import org.apache.velocity.tools.ToolContext;
+import org.apache.velocity.tools.ToolboxFactory;
+import org.apache.velocity.tools.config.XmlFactoryConfiguration;
 import org.remind.goku.GlobalConfig;
 import org.remind.goku.context.HttpContext;
 import org.remind.goku.internal.action.ActionResult;
@@ -20,6 +26,9 @@ public class VelocityView implements View {
 	private static RuntimeInstance rtInstance;
 	private String path;
 	private final String suffix = ".html";
+	private static final String TOOL_BOX_CONF_FILE = "toolbox.xml";
+	private static ToolContext toolContext;
+
 	static {
 		Properties ps = new Properties();
 		ps.setProperty("resource.loader", "file");
@@ -40,13 +49,31 @@ public class VelocityView implements View {
 		ps.setProperty("runtime.log.logsystem.class",
 				"org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
 		ps.setProperty("runtime.log.logsystem.log4j.category", "velocity_log");
-
+		
 		rtInstance = new RuntimeInstance();
 
 		try {
 			rtInstance.init(ps);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		initToolContext();
+	}
+
+	private static void initToolContext() {
+		if (toolContext == null) {
+			XmlFactoryConfiguration factoryConfiguration = new XmlFactoryConfiguration("Default Tools");
+			try {
+				factoryConfiguration.read(new FileInputStream(new File(Thread.currentThread().getContextClassLoader().getResource("/").getFile(), TOOL_BOX_CONF_FILE)));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			ToolboxFactory factory = factoryConfiguration.createFactory();
+			factory.configure(factoryConfiguration);
+			toolContext = new ToolContext();
+			for (String scope : Scope.values()) {
+				toolContext.addToolbox(factory.createToolbox(scope));
+			}
 		}
 	}
 
@@ -57,13 +84,13 @@ public class VelocityView implements View {
 	@Override
 	public void render(ActionResult actionResult) {
 		actionResult.getModel().add("httpContext", HttpContext.getCurrent());
-		
+
 		Template template = rtInstance.getTemplate(path + suffix);
 
 		HttpServletResponse response = HttpContext.getCurrent().getResponse();
 		response.setContentType("text/html;charset=\"" + GlobalConfig.ENCODING + "\"");
 		response.setCharacterEncoding(GlobalConfig.ENCODING);
-		Context context = new VelocityContext(actionResult.getModel().getAll());
+		Context context = new VelocityContext(actionResult.getModel().getAll(), toolContext);
 		VelocityWriter vw = null;
 		try {
 			vw = new VelocityWriter(response.getWriter());

@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
 import org.remind.goku.route.Router;
 import org.remind.goku.route.impl.DefaultRouter;
 
@@ -19,7 +22,10 @@ public class GlobalConfig {
 	private static final String PRO_FILE = "goku.properties";
 	private static Properties configPro = new Properties();
 	
-	public static void init() {
+	private static ServletContext servletContext;
+	
+	public static void init(ServletContext servletContextParam) {
+		servletContext = servletContextParam;
 		try {
 			configPro.load(new FileInputStream(new File(Thread.currentThread().getContextClassLoader().getResource("/").getFile(), PRO_FILE)));
 		} catch (IOException e) {
@@ -62,5 +68,30 @@ public class GlobalConfig {
 	 */
 	public static Router getMvcRoute() {
 		return new DefaultRouter();
+	}
+	
+	/**
+	 * 获取文件上传路径
+	 * 默认为：/upload
+	 * 也可直接在配置文件中配置"file.upload"
+	 * @return
+	 */
+	public static String getUploadPath() {
+		if (configPro.containsKey("file.upload")) {
+			return configPro.getProperty("file.upload");
+		} else {
+			return servletContext.getRealPath("/upload");
+		}
+	}
+	/**
+	 * 文件上传的http路径
+	 * @return
+	 */
+	public static String getUploadHttpUrl() {
+		if (configPro.containsKey("file.upload")) {
+			return configPro.getProperty("file.upload");
+		} else {
+			return "/upload/";
+		}
 	}
 }

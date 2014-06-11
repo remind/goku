@@ -40,6 +40,7 @@ public class JsonView implements View{
 			for (String name : this.headerMap.keySet()) {
 				httpContext.getResponse().setHeader(name, this.headerMap.get(name));
 			}
+			httpContext.getResponse().setCharacterEncoding(GlobalConfig.ENCODING);
 			Writer writer = httpContext.getResponse().getWriter();
 			writer.write(JSON.toJSONString(object));
 			writer.flush();
