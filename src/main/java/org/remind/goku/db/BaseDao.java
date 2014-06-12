@@ -10,7 +10,10 @@ import com.google.common.base.Joiner;
 
 public abstract class BaseDao<Entity> {
 
-	private Map<String, Object> queryParam = new LinkedHashMap<String, Object>();
+	/**
+	 * 保存set的参数
+	 */
+	private Map<String, Object> paramModel = new LinkedHashMap<String, Object>();
 	
 	/**
 	 * 根据主键查询返回一条
@@ -32,7 +35,7 @@ public abstract class BaseDao<Entity> {
 	 * @return
 	 */
 	public BaseDao<Entity> set(String column, Object value) {
-		queryParam.put(column, value);
+		paramModel.put(column, value);
 		return this;
 	}
 	
@@ -58,6 +61,60 @@ public abstract class BaseDao<Entity> {
 	}
 	
 	/**
+	 * 根据id修改
+	 * 要修改的列和值都从set中设置
+	 * 在调用完成之后会清空
+	 * @param id
+	 * @return
+	 */
+	public int update(int id) {
+		if (paramModel.size() < 1) {
+			return -1;
+		}
+		Object[] params = new Object[paramModel.size() + 1];
+		String sql = "update " + getTableName() + " set ";
+		int i = 0;
+		for (String column : paramModel.keySet()) {
+			sql += column + "=?,";
+			params[i] = paramModel.get(column);
+		}
+		sql = sql.substring(0, sql.length() - 1 ) + " where id = ?";
+		params[paramModel.size()] = id;
+		return DbUtilTemplate.update(sql, params);
+	}
+	
+	/**
+	 * 直接修改实体
+	 * 以id为条件
+	 * 如果没有id,就是修改全部
+	 * @param entity
+	 * @return
+	 */
+	public int update(Entity entity) {
+		Map<String, Object> map = EntityUtil.getValidProperty(entity);
+		if (map == null || map.size() < 1) {
+			return -1;
+		}
+		String sql = "update " + getTableName() + " set ";
+		Object[] params = new Object[map.size()];
+		int i = 0;
+		for (String column : map.keySet()) {
+			if (column.equals("id")) {
+				continue;
+			}
+			sql += column + "=?,";
+			params[i] = map.get(column);
+			i++;
+		}
+		sql = sql.substring(0, sql.length() - 1);
+		if (map.keySet().contains("id"))  {
+			sql += " where id = ?";
+			params[map.size() - 1] = map.get("id");
+		}
+		return DbUtilTemplate.update(sql, params);
+	}
+	
+	/**
 	 * 查询 
 	 * 在查询完成后会把set的参数清空
 	 * @return
@@ -65,19 +122,28 @@ public abstract class BaseDao<Entity> {
 	public List<Entity> query() {
 		String sql = "select * from " + getTableName();
 		Object[] param = null;
-		if (queryParam.size() > 0) {
+		if (paramModel.size() > 0) {
 			sql += " where ";
-			param = new Object[queryParam.size()];
+			param = new Object[paramModel.size()];
 			int i = 0;
-			for (String column : queryParam.keySet()) {
+			for (String column : paramModel.keySet()) {
 				sql += column + " = ? and";
-				param[i] = queryParam.get(column);
+				param[i] = paramModel.get(column);
 				i ++;
 			}
-			queryParam.clear();
+			paramModel.clear();
 			sql = sql.substring(0, sql.length() - 3);
 		}
 		return DbUtilTemplate.find(getEntityClass(), sql, param);
+	}
+	
+	/**
+	 * 根据主键删除
+	 * @param id
+	 * @return
+	 */
+	public int delete(int id) {
+		return DbUtilTemplate.deleteByKey(getTableName(), id);
 	}
 	
 	/**

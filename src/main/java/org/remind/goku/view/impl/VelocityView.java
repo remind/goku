@@ -21,6 +21,11 @@ import org.remind.goku.context.HttpContext;
 import org.remind.goku.internal.action.ActionResult;
 import org.remind.goku.view.View;
 
+/**
+ * velocity视图
+ * @author remind
+ *
+ */
 public class VelocityView implements View {
 
 	private static RuntimeInstance rtInstance;
@@ -97,7 +102,7 @@ public class VelocityView implements View {
 			template.merge(context, vw);
 			vw.flush();
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		} finally {
 			if (vw != null)
 				vw.recycle(null);
