@@ -123,8 +123,8 @@ public abstract class BaseController {
 	
 	/**
 	 * 上传文件
-	 * @param maxSize	最大大小
-	 * @param enableFileExt		允许的文件后缀
+	 * @param maxSize	最大大小 单位为M
+	 * @param enableFileExt		允许的文件后缀,用","分隔
 	 */
 	protected List<Map<String, String>> uploadFile(int maxSize, String enableFileExt) {
 		String savePath = GlobalConfig.getUploadPath();
@@ -146,7 +146,7 @@ public abstract class BaseController {
 					if (fileName == null || fileName.equals("")) {
 						continue;
 					}
-					if(item.getSize() > maxSize) {
+					if(item.getSize() > maxSize * 1024 * 1024) {
 						log.debug("上传文件太大");
 						map.put("errorMsg", "文件太大");
 						map.put("success", "0");

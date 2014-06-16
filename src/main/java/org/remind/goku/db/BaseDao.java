@@ -49,8 +49,8 @@ public abstract class BaseDao<Entity> {
 		if (map.size() < 1) {
 			return -1;
 		}
-		String sql = "insert into " + getTableName() + "(";
-		sql += Joiner.on(",").join(map.keySet()) + ") values(";
+		String sql = "insert into " + getTableName() + "(`";
+		sql += Joiner.on("`,`").join(map.keySet()) + "`) values(";
 		Object[] params = new Object[map.size()];
 		for (int i = 0; i < params.length; i++) {
 			sql += "?,";
@@ -127,12 +127,12 @@ public abstract class BaseDao<Entity> {
 			param = new Object[paramModel.size()];
 			int i = 0;
 			for (String column : paramModel.keySet()) {
-				sql += column + " = ? and";
+				sql += column + " = ? and ";
 				param[i] = paramModel.get(column);
 				i ++;
 			}
 			paramModel.clear();
-			sql = sql.substring(0, sql.length() - 3);
+			sql = sql.substring(0, sql.length() - 4);
 		}
 		return DbUtilTemplate.find(getEntityClass(), sql, param);
 	}

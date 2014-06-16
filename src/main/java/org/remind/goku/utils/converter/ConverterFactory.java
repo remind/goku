@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.remind.goku.utils.converter.imp.IntegerConverter;
+import org.remind.goku.utils.converter.imp.StringConverter;
 
 /**
  * 类型转换工厂
@@ -17,6 +18,7 @@ public class ConverterFactory {
 	static {
 		converterMap.put(Integer.class, new IntegerConverter());
 		converterMap.put(int.class, new IntegerConverter());
+		converterMap.put(String.class, new StringConverter());
 	}
 
 	/**
