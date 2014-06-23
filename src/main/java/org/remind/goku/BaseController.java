@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
@@ -21,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.remind.goku.context.HttpContext;
 import org.remind.goku.context.ThreadLocalContext;
 import org.remind.goku.internal.ModelMap;
+import org.remind.goku.internal.UploadFile;
 import org.remind.goku.internal.action.ActionResult;
 import org.remind.goku.utils.DateUtil;
 import org.remind.goku.utils.HtmlUtil;
@@ -126,9 +125,9 @@ public abstract class BaseController {
 	 * @param maxSize	最大大小 单位为M
 	 * @param enableFileExt		允许的文件后缀,用","分隔
 	 */
-	protected List<Map<String, String>> uploadFile(int maxSize, String enableFileExt) {
+	protected List<UploadFile> uploadFile(int maxSize, String enableFileExt) {
 		String savePath = GlobalConfig.getUploadPath();
-		List<Map<String, String>> result = new ArrayList<Map<String,String>>();
+		List<UploadFile> result = new ArrayList<UploadFile>();
 		
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
@@ -138,7 +137,7 @@ public abstract class BaseController {
 			items = upload.parseRequest(HttpContext.getCurrent().getRequest());
 			Iterator<FileItem> itr = items.iterator();
 			while (itr.hasNext()) {
-				Map<String, String> map = new HashMap<String, String>();
+				UploadFile uploadFile = new UploadFile();
 				FileItem item = itr.next();
 				String fileName = item.getName();
 				if (!item.isFormField()) {
@@ -148,17 +147,17 @@ public abstract class BaseController {
 					}
 					if(item.getSize() > maxSize * 1024 * 1024) {
 						log.debug("上传文件太大");
-						map.put("errorMsg", "文件太大");
-						map.put("success", "0");
-						result.add(map);
+						uploadFile.setSuccess(false);
+						uploadFile.setErrorMsg("文件太大");
+						result.add(uploadFile);
 						return result;
 					}
 					String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
 					if(enableFileExt.indexOf(fileExt) < 0){
 						log.error("上传文件格式错误");
-						map.put("errorMsg", "文件格式错误");
-						map.put("success", "0");
-						result.add(map);
+						uploadFile.setSuccess(false);
+						uploadFile.setErrorMsg("文件格式错误");
+						result.add(uploadFile);
 						return result;
 					}
 					
@@ -173,13 +172,14 @@ public abstract class BaseController {
 					try{
 						File uploadedFile = new File(dir.getPath(), newFileName);
 						item.write(uploadedFile);
-						map.put("imgUrl", GlobalConfig.getUploadHttpUrl() + dirUrl + newFileName);
-						map.put("success", "1");
+						uploadFile.setSuccess(true);
+						uploadFile.setFileUrl(GlobalConfig.getUploadHttpUrl() + dirUrl + newFileName);
 					}catch(Exception e) {
 						e.printStackTrace();
-						map.put("success", "0");
+						uploadFile.setSuccess(false);
+						uploadFile.setErrorMsg("服务器异常");
 					}
-					result.add(map);
+					result.add(uploadFile);
 				} else {
 					HttpContext.getCurrent().getContextMap().put(item.getFieldName(), new String(item.get(), GlobalConfig.ENCODING));
 				}
